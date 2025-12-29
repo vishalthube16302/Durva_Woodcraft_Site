@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../hooks/useSettings';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -42,7 +43,7 @@ export default function AdminLogin() {
         <div className="text-center mb-8">
           {settings.logo_url && (
             <img
-              src={settings.logo_url}
+              src={getImageUrl(settings.logo_url)}
               alt={settings.brand_name}
               className="h-16 w-auto mx-auto mb-4"
             />

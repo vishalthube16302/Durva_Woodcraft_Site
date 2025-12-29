@@ -5,6 +5,7 @@ import { useSettings } from '../hooks/useSettings';
 import { Truck, Phone, MessageCircle, Share2, Heart, ShoppingCart } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function ProductDetails() {
     const { id } = useParams<{ id: string }>();
@@ -96,7 +97,7 @@ export default function ProductDetails() {
                             <div className="p-8 lg:p-12 bg-gray-50/50">
                                 <div className="relative aspect-square rounded-2xl overflow-hidden bg-white shadow-sm mb-6 group">
                                     <img
-                                        src={activeImage || 'https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg'}
+                                        src={getImageUrl(activeImage)}
                                         alt={product.name}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
@@ -115,7 +116,7 @@ export default function ProductDetails() {
                                                     }`}
                                                 style={{ borderColor: activeImage === img ? settings.primary_color : undefined }}
                                             >
-                                                <img src={img} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
+                                                <img src={getImageUrl(img)} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
                                             </button>
                                         ))}
                                     </div>
@@ -141,9 +142,26 @@ export default function ProductDetails() {
                                         <p>{product.description}</p>
                                     </div>
 
-                                    {product.features && product.features.length > 0 && (
+                                    {product.specifications && Object.keys(product.specifications).length > 0 && (
                                         <div className="mb-8">
                                             <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900 mb-4">Specifications</h3>
+                                            <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                                                {Object.entries(product.specifications).map(([key, value], index) => (
+                                                    <div
+                                                        key={key}
+                                                        className={`flex p-4 text-sm ${index !== Object.entries(product.specifications).length - 1 ? 'border-b border-gray-100' : ''}`}
+                                                    >
+                                                        <span className="w-1/3 text-gray-500 font-medium">{key}</span>
+                                                        <span className="w-2/3 text-gray-900">{value as string}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {product.features && product.features.length > 0 && (
+                                        <div className="mb-8">
+                                            <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900 mb-4">Features</h3>
                                             <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
                                                 {product.features.map((feature, index) => (
                                                     <div
@@ -213,7 +231,7 @@ export default function ProductDetails() {
                                     >
                                         <div className="h-48 overflow-hidden relative group">
                                             <img
-                                                src={related.images[0] || 'https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg'}
+                                                src={getImageUrl(related.images[0])}
                                                 alt={related.name}
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             />

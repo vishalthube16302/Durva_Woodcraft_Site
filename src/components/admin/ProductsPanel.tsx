@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { supabase, Product, Category } from '../../lib/supabase';
 import { useSettings } from '../../hooks/useSettings';
+import { getImageUrl } from '../../utils/imageUtils';
 
 export default function ProductsPanel() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -9,17 +10,21 @@ export default function ProductsPanel() {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+
+  // RAW FORM Data - we store complex fields as strings for JSON editing
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     category_id: '',
     price: 0,
-    images: [''],
-    features: [''],
+    imagesJson: '[]', // Stores JSON string of images array
+    specificationsJson: '{}', // Stores JSON string of key-value pairs
+    featuresJson: '[]', // Stores JSON string of features array
     is_featured: false,
     is_active: true,
     display_order: 0,
   });
+
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -58,36 +63,67 @@ export default function ProductsPanel() {
   const handleAdd = async () => {
     if (!formData.name) return;
     try {
+      // Parse JSON fields
+      let images = [];
+      let specifications = {};
+      let features = [];
+
+      try { images = JSON.parse(formData.imagesJson); } catch (e) { alert('Invalid Images JSON'); return; }
+      try { specifications = JSON.parse(formData.specificationsJson); } catch (e) { alert('Invalid Specifications JSON'); return; }
+      try { features = JSON.parse(formData.featuresJson); } catch (e) { alert('Invalid Features JSON'); return; }
+
       const { error } = await supabase.from('products').insert([{
-        ...formData,
+        name: formData.name,
+        description: formData.description,
+        price: formData.price,
         category_id: formData.category_id || null,
-        images: formData.images.filter((img) => img),
-        features: formData.features.filter((f) => f),
+        images: images,
+        specifications: specifications,
+        features: features,
+        is_featured: formData.is_featured,
+        is_active: formData.is_active,
+        display_order: formData.display_order
       }]);
+
       if (error) throw error;
       resetForm();
       fetchProducts();
     } catch (error) {
-      console.error('Error:', error);
+      alert('Error saving product: ' + (error as any).message);
     }
   };
 
   const handleUpdate = async (id: string) => {
     try {
+      // Parse JSON fields
+      let images = [];
+      let specifications = {};
+      let features = [];
+
+      try { images = JSON.parse(formData.imagesJson); } catch (e) { alert('Invalid Images JSON'); return; }
+      try { specifications = JSON.parse(formData.specificationsJson); } catch (e) { alert('Invalid Specifications JSON'); return; }
+      try { features = JSON.parse(formData.featuresJson); } catch (e) { alert('Invalid Features JSON'); return; }
+
       const { error } = await supabase
         .from('products')
         .update({
-          ...formData,
+          name: formData.name,
+          description: formData.description,
+          price: formData.price,
           category_id: formData.category_id || null,
-          images: formData.images.filter((img) => img),
-          features: formData.features.filter((f) => f),
+          images: images,
+          specifications: specifications,
+          features: features,
+          is_featured: formData.is_featured,
+          is_active: formData.is_active,
+          display_order: formData.display_order
         })
         .eq('id', id);
       if (error) throw error;
       resetForm();
       fetchProducts();
     } catch (error) {
-      console.error('Error:', error);
+      alert('Error updating product: ' + (error as any).message);
     }
   };
 
@@ -110,11 +146,28 @@ export default function ProductsPanel() {
       description: '',
       category_id: '',
       price: 0,
-      images: [''],
-      features: [''],
+      imagesJson: '[]',
+      specificationsJson: '{}',
+      featuresJson: '[]',
       is_featured: false,
       is_active: true,
       display_order: 0,
+    });
+  };
+
+  const startEditing = (product: Product) => {
+    setEditingId(product.id);
+    setFormData({
+      name: product.name,
+      description: product.description,
+      category_id: product.category_id || '',
+      price: product.price,
+      imagesJson: JSON.stringify(product.images || [], null, 2),
+      specificationsJson: JSON.stringify(product.specifications || {}, null, 2),
+      featuresJson: JSON.stringify(product.features || [], null, 2),
+      is_featured: product.is_featured,
+      is_active: product.is_active,
+      display_order: product.display_order,
     });
   };
 
@@ -141,48 +194,108 @@ export default function ProductsPanel() {
       {(isAdding || editingId) && (
         <div className="mb-6 p-6 border-2 rounded-lg" style={{ borderColor: settings.primary_color }}>
           <div className="space-y-4">
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Product Name"
-              className="w-full px-4 py-3 rounded-lg border"
-            />
-            <select
-              value={formData.category_id}
-              onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border"
-            >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Description"
-              rows={3}
-              className="w-full px-4 py-3 rounded-lg border resize-none"
-            />
-            <input
-              type="number"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-              placeholder="Price"
-              className="w-full px-4 py-3 rounded-lg border"
-            />
-            <div className="flex space-x-2">
+
+            {/* NAME */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg border"
+              />
+            </div>
+
+            {/* CATEGORY, PRICE & ORDER */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select
+                  value={formData.category_id}
+                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                  className="w-full px-4 py-2 rounded-lg border"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                <input
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                  className="w-full px-4 py-2 rounded-lg border"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                <input
+                  type="number"
+                  value={formData.display_order}
+                  onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                  className="w-full px-4 py-2 rounded-lg border"
+                />
+              </div>
+            </div>
+
+            {/* DESCRIPTION */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={3}
+                className="w-full px-4 py-2 rounded-lg border resize-none"
+              />
+            </div>
+
+            {/* SPECIFICATIONS JSON */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Specifications (JSON Key-Value)
+              </label>
+              <textarea
+                value={formData.specificationsJson}
+                onChange={(e) => setFormData({ ...formData, specificationsJson: e.target.value })}
+                rows={4}
+                placeholder='{"Weight": "10kg", "Material": "Teak"}'
+                className="w-full px-4 py-2 rounded-lg border font-mono text-sm bg-gray-50"
+              />
+              <p className="text-xs text-gray-500 mt-1">Enter valid JSON object.</p>
+            </div>
+
+            {/* IMAGES JSON */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Images (JSON Array)
+              </label>
+              <textarea
+                value={formData.imagesJson}
+                onChange={(e) => setFormData({ ...formData, imagesJson: e.target.value })}
+                rows={4}
+                placeholder='["image1.jpg", "image2.jpg"]'
+                className="w-full px-4 py-2 rounded-lg border font-mono text-sm bg-gray-50"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                First image is Main. Others appear in details. Use filenames from <code>public/images/</code>.
+              </p>
+            </div>
+
+            {/* ACTIONS */}
+            <div className="flex space-x-2 pt-4">
               <button
                 onClick={editingId ? () => handleUpdate(editingId) : handleAdd}
-                className="px-6 py-3 rounded-lg text-white"
+                className="px-6 py-2 rounded-lg text-white font-medium"
                 style={{ backgroundColor: settings.primary_color }}
               >
-                Save
+                Save Product
               </button>
               <button
                 onClick={resetForm}
-                className="px-6 py-3 rounded-lg bg-gray-200"
+                className="px-6 py-2 rounded-lg bg-gray-200 font-medium"
               >
                 Cancel
               </button>
@@ -191,52 +304,55 @@ export default function ProductsPanel() {
         </div>
       )}
 
+      {/* PRODUCT LIST */}
       {loading ? (
         <div className="text-center py-12">Loading...</div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {products.map((product) => (
-            <div key={product.id} className="border rounded-lg overflow-hidden">
-              {product.images[0] && (
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
-              )}
-              <div className="p-6">
-                <h3 className="text-xl font-bold" style={{ color: settings.primary_color }}>
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-2">{product.description}</p>
-                <p className="font-bold mb-4">₹{product.price}</p>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setEditingId(product.id);
-                      setFormData({
-                        name: product.name,
-                        description: product.description,
-                        category_id: product.category_id || '',
-                        price: product.price,
-                        images: product.images.length > 0 ? product.images : [''],
-                        features: product.features.length > 0 ? product.features : [''],
-                        is_featured: product.is_featured,
-                        is_active: product.is_active,
-                        display_order: product.display_order,
-                      });
-                    }}
-                    className="p-2"
-                    style={{ color: settings.primary_color }}
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="p-2 text-red-600"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+            <div key={product.id} className="border rounded-lg overflow-hidden flex flex-col">
+              <div className="h-48 overflow-hidden bg-gray-100 relative">
+                {product.images && product.images.length > 0 ? (
+                  <img
+                    src={getImageUrl(product.images[0])}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">No Image</div>
+                )}
+              </div>
+
+              <div className="p-6 flex-1 flex flex-col">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-xl font-bold" style={{ color: settings.primary_color }}>
+                    {product.name}
+                  </h3>
+                  <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                    {categories.find(c => c.id === product.category_id)?.name || 'Uncategorized'}
+                  </span>
+                </div>
+
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+
+                <div className="mt-auto flex justify-between items-center">
+                  <p className="font-bold text-lg">₹{product.price.toLocaleString()}</p>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => startEditing(product)}
+                      className="p-2 rounded hover:bg-gray-100 text-blue-600"
+                      title="Edit"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="p-2 rounded hover:bg-gray-100 text-red-600"
+                      title="Delete"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

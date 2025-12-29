@@ -37,6 +37,7 @@ export interface Product {
   price: number;
   images: string[];
   features: string[];
+  specifications: Record<string, string>;
   is_featured: boolean;
   is_active: boolean;
   display_order: number;

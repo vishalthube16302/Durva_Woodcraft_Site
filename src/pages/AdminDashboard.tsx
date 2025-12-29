@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Settings, Package, FolderTree } from 'lucide-react';
+import { LogOut, Settings, Package, FolderTree, Image as ImageIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../hooks/useSettings';
+import { getImageUrl } from '../utils/imageUtils';
 import SettingsPanel from '../components/admin/SettingsPanel';
 import CategoriesPanel from '../components/admin/CategoriesPanel';
 import ProductsPanel from '../components/admin/ProductsPanel';
+import GalleryPanel from '../components/admin/GalleryPanel';
 
-type Tab = 'settings' | 'categories' | 'products';
+type Tab = 'settings' | 'categories' | 'products' | 'gallery';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('settings');
@@ -38,6 +40,7 @@ export default function AdminDashboard() {
     { id: 'settings' as Tab, name: 'Settings', icon: Settings },
     { id: 'categories' as Tab, name: 'Categories', icon: FolderTree },
     { id: 'products' as Tab, name: 'Products', icon: Package },
+    { id: 'gallery' as Tab, name: 'Images', icon: ImageIcon },
   ];
 
   return (
@@ -48,7 +51,7 @@ export default function AdminDashboard() {
             <div className="flex items-center space-x-4">
               {settings.logo_url && (
                 <img
-                  src={settings.logo_url}
+                  src={getImageUrl(settings.logo_url)}
                   alt={settings.brand_name}
                   className="h-10 w-auto"
                 />
@@ -88,17 +91,16 @@ export default function AdminDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
-                    activeTab === tab.id
-                      ? 'text-white'
-                      : 'border-transparent text-gray-600 hover:text-gray-900'
-                  }`}
+                  className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${activeTab === tab.id
+                    ? 'text-white'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                    }`}
                   style={
                     activeTab === tab.id
                       ? {
-                          backgroundColor: settings.primary_color,
-                          borderColor: settings.primary_color,
-                        }
+                        backgroundColor: settings.primary_color,
+                        borderColor: settings.primary_color,
+                      }
                       : {}
                   }
                 >
@@ -115,6 +117,7 @@ export default function AdminDashboard() {
         {activeTab === 'settings' && <SettingsPanel />}
         {activeTab === 'categories' && <CategoriesPanel />}
         {activeTab === 'products' && <ProductsPanel />}
+        {activeTab === 'gallery' && <GalleryPanel />}
       </main>
     </div>
   );

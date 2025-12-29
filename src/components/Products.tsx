@@ -3,6 +3,7 @@ import { useProducts } from '../hooks/useProducts';
 import { useCategories } from '../hooks/useCategories';
 import { useSettings } from '../hooks/useSettings';
 import { ShoppingCart } from 'lucide-react';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function Products() {
   const { products, loading } = useProducts();
@@ -59,7 +60,7 @@ export default function Products() {
               >
                 <div className="h-80 overflow-hidden relative">
                   <img
-                    src={product.images[0] || 'https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg'}
+                    src={getImageUrl(product.images[0])}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />

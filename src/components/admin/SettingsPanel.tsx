@@ -72,13 +72,19 @@ export default function SettingsPanel() {
           />
         </div>
 
-        <input
-          type="url"
-          value={formData.logo_url || ''}
-          onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-          placeholder="Logo URL"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300"
-        />
+        <div>
+          <label className="block text-sm font-medium mb-1">Logo Filename (or URL)</label>
+          <input
+            type="text"
+            value={formData.logo_url || ''}
+            onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
+            placeholder="e.g. logo.png or https://..."
+            className="w-full px-4 py-3 rounded-lg border border-gray-300"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            For local images, upload to <code>public/images/</code> and type filename here.
+          </p>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           <div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Phone, Mail, Home, Package, Info } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
+import { getImageUrl } from '../utils/imageUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Header() {
@@ -104,7 +105,7 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             {settings.logo_url && (
               <img
-                src={settings.logo_url}
+                src={getImageUrl(settings.logo_url)}
                 alt={settings.brand_name}
                 className="h-12 w-auto object-contain"
               />
