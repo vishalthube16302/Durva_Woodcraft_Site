@@ -1,84 +1,160 @@
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { useState } from 'react';
+import { MapPin, Phone, Mail, Clock, MessageCircle, Send, CheckCircle } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
+import { supabase } from '../lib/supabase';
 
 export default function Contact() {
   const { settings } = useSettings();
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   if (!settings) return null;
 
+  const waNumber = settings.phone_numbers?.[0]?.replace(/\D/g, '') || '';
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.phone) return;
+    setStatus('sending');
+    try {
+      const { error } = await supabase.from('inquiries').insert([{
+        name: form.name,
+        email: form.email || null,
+        phone: form.phone,
+        message: form.message,
+        created_at: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+      setStatus('success');
+      setForm({ name: '', email: '', phone: '', message: '' });
+    } catch {
+      setStatus('error');
+    }
+  };
+
   return (
-    <section id="contact" className="py-20 bg-gray-50">
+    <section id="contact" className="py-20 bg-royal-surface/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4" style={{ color: settings.primary_color }}>
+
+        {/* Heading */}
+        <div className="text-center mb-14">
+          <p className="font-body text-royal-saffron font-semibold text-sm uppercase tracking-widest mb-3">
+            Reach Us
+          </p>
+          <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">
             Get in Touch
           </h2>
+          <hr className="royal-divider w-24 mt-10 mb-4" />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold mb-6" style={{ color: settings.primary_color }}>
+        <div className="grid lg:grid-cols-2 gap-10">
+
+          {/* Contact Form */}
+          <div className="bg-royal-bg rounded-2xl p-8 shadow-royal-sm border border-royal-border">
+            <h3 className="font-display text-2xl font-bold text-royal-mahogany mb-6">
               Send us a Message
             </h3>
-            <form className="space-y-6">
-              <input type="text" placeholder="Your Name" className="w-full px-4 py-3 rounded-lg border border-gray-300" />
-              <input type="email" placeholder="Email Address" className="w-full px-4 py-3 rounded-lg border border-gray-300" />
-              <input type="tel" placeholder="Phone Number" className="w-full px-4 py-3 rounded-lg border border-gray-300" />
-              <textarea placeholder="Message" rows={4} className="w-full px-4 py-3 rounded-lg border border-gray-300 resize-none"></textarea>
-              <button
-                type="submit"
-                className="w-full py-4 rounded-lg text-white font-medium"
-                style={{ backgroundColor: settings.primary_color }}
-              >
-                Send Message
-              </button>
-            </form>
+
+            {status === 'success' ? (
+              <div className="flex flex-col items-center justify-center h-48 gap-4 text-center">
+                <CheckCircle size={48} className="text-green-500" />
+                <p className="font-display text-xl font-bold text-royal-mahogany">Message Received!</p>
+                <p className="font-body text-royal-navy/70">We'll reply within 24 hours. You can also WhatsApp us for a faster response.</p>
+                <button onClick={() => setStatus('idle')} className="text-sm text-royal-saffron underline">Send another</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  name="name" value={form.name} onChange={handleChange}
+                  type="text" placeholder="Your Name *" required
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron"
+                />
+                <input
+                  name="email" value={form.email} onChange={handleChange}
+                  type="email" placeholder="Email Address"
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron"
+                />
+                <input
+                  name="phone" value={form.phone} onChange={handleChange}
+                  type="tel" placeholder="Phone Number *" required
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron"
+                />
+                <textarea
+                  name="message" value={form.message} onChange={handleChange}
+                  placeholder="Your Message or Requirement" rows={4}
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron resize-none"
+                />
+                {status === 'error' && (
+                  <p className="text-red-500 text-sm font-body">Something went wrong. Please try WhatsApp instead.</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="w-full royal-btn-primary flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {status === 'sending' ? 'Sending...' : (<><Send size={16} /> Send Message</>)}
+                </button>
+              </form>
+            )}
+
+            {/* OR WhatsApp */}
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 h-px bg-royal-border" />
+              <span className="font-body text-sm text-royal-navy/50">or faster via</span>
+              <div className="flex-1 h-px bg-royal-border" />
+            </div>
+            <a
+              href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20your%20furniture.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold font-body text-white transition-all hover:shadow-lg"
+              style={{ backgroundColor: '#25D366' }}
+            >
+              <MessageCircle size={18} />
+              Chat on WhatsApp
+            </a>
           </div>
 
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <h3 className="text-2xl font-bold mb-6" style={{ color: settings.primary_color }}>
-                Contact Information
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white flex-shrink-0" style={{ backgroundColor: settings.primary_color }}>
-                    <MapPin size={24} />
+          {/* Contact Info */}
+          <div className="space-y-6">
+            <div className="bg-royal-bg rounded-2xl p-8 shadow-royal-sm border border-royal-border">
+              <h3 className="font-display text-2xl font-bold text-royal-mahogany mb-6">Contact Information</h3>
+              <div className="space-y-5">
+                {[
+                  { icon: MapPin, title: 'Address',        content: settings.address },
+                  { icon: Phone,  title: 'Phone',          content: settings.phone_numbers.join(' / ') },
+                  { icon: Mail,   title: 'Email',          content: settings.email },
+                  { icon: Clock,  title: 'Business Hours', content: 'Monday – Saturday: 9:00 AM – 6:00 PM' },
+                ].map(({ icon: Icon, title, content }) => (
+                  <div key={title} className="flex gap-4 items-start">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-royal-mahogany text-royal-bg flex-shrink-0">
+                      <Icon size={20} />
+                    </div>
+                    <div>
+                      <p className="font-body font-semibold text-royal-mahogany text-sm">{title}</p>
+                      <p className="font-body text-royal-navy/70 text-sm">{content}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Address</h4>
-                    <p className="text-gray-600">{settings.address}</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white flex-shrink-0" style={{ backgroundColor: settings.primary_color }}>
-                    <Phone size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Phone</h4>
-                    {settings.phone_numbers.map((phone, i) => (
-                      <p key={i} className="text-gray-600">{phone}</p>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white flex-shrink-0" style={{ backgroundColor: settings.primary_color }}>
-                    <Mail size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Email</h4>
-                    <p className="text-gray-600">{settings.email}</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white flex-shrink-0" style={{ backgroundColor: settings.primary_color }}>
-                    <Clock size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Business Hours</h4>
-                    <p className="text-gray-600">Monday - Saturday: 9:00 AM - 6:00 PM</p>
-                  </div>
-                </div>
+                ))}
+              </div>
+            </div>
+
+            {/* UPI Payment info */}
+            <div className="bg-royal-navy rounded-2xl p-6 border border-royal-border">
+              <h4 className="font-display text-lg font-bold text-royal-bg mb-2">💳 Payment Options</h4>
+              <p className="font-body text-royal-bg/70 text-sm mb-4">
+                We accept UPI payments via PhonePe, GPay, and Paytm. Pay after order confirmation — simple and secure.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {['PhonePe', 'Google Pay', 'Paytm', 'Bank Transfer', 'Cash on Delivery'].map(m => (
+                  <span key={m} className="text-xs font-semibold font-body px-3 py-1.5 rounded-full bg-white/15 text-royal-bg border border-white/20">
+                    {m}
+                  </span>
+                ))}
               </div>
             </div>
           </div>

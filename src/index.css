@@ -1,3 +1,169 @@
+/* Royal Craft — Global CSS */
+@import '@fontsource/libre-baskerville/400.css';
+@import '@fontsource/libre-baskerville/700.css';
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/600.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── CSS variables (kept for legacy inline style usage) ── */
+:root {
+  --primary-color:   #4A1C0A;
+  --secondary-color: #FAF7F0;
+  --accent-color:    #E8751A;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  background-color: #FAF7F0;
+  color: #4A1C0A;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Libre Baskerville', Georgia, serif;
+}
+
+/* ── Utility classes ── */
+.royal-card {
+  background: #F0E8D8;
+  border: 1px solid #D4B896;
+  border-radius: 1rem;
+}
+
+.royal-btn-primary {
+  background: #E8751A;
+  color: #FAF7F0;
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.85rem 2rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(232,117,26,0.35);
+}
+
+.royal-btn-primary:hover {
+  background: #C9973A;
+  box-shadow: 0 6px 20px rgba(232,117,26,0.45);
+  transform: translateY(-1px);
+}
+
+.royal-btn-outline {
+  border: 2px solid #E8751A;
+  color: #E8751A;
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.85rem 2rem;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.royal-btn-outline:hover {
+  background: #E8751A;
+  color: #FAF7F0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #FAF7F0; }
+::-webkit-scrollbar-thumb { background: #D4B896; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #C9973A; }
+
+/* ── Hide scrollbar for product row ── */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── WhatsApp float button ── */
+.wa-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.5);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: wa-pulse 2.5s infinite;
+}
+
+.wa-float:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(37,211,102,0.65);
+}
+
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
+  50%       { box-shadow: 0 4px 32px rgba(37,211,102,0.8); }
+}
+
+/* ── Decorative divider ── */
+.royal-divider {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #C9973A 30%, #E8751A 50%, #C9973A 70%, transparent);
+  border: none;
+  margin: 0 auto;
+}
+
+/* ── Section heading with underline ── */
+.section-heading {
+  font-family: 'Libre Baskerville', serif;
+  color: #4A1C0A;
+  position: relative;
+  display: inline-block;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #E8751A, #C9973A);
+  border-radius: 2px;
+}
+
+/* ── Badge ── */
+.badge-handmade {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #1B2D4F;
+  color: #FAF7F0;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.badge-msme {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #E8751A;
+  color: #FAF7F0;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 4px;
+}

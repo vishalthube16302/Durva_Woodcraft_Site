@@ -14,6 +14,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
+    "@fontsource/libre-baskerville": "^5.2.10",
+    "@fontsource/source-sans-3": "^5.2.9",
     "@supabase/supabase-js": "^2.57.4",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
