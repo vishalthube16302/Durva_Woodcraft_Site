@@ -37,7 +37,7 @@ export default function Hero() {
             <div>
               <h1 className="font-display text-5xl lg:text-6xl font-bold leading-tight text-royal-mahogany mb-5">
                 Honoring Nature,{' '}
-                <span className="text-royal-saffron">Crafting Life.</span>
+                <span className="text-royal-brown">Crafting Life.</span>
               </h1>
               <p className="font-body text-lg text-royal-navy/70 leading-relaxed max-w-lg">
                 Handmade wooden furniture crafted by skilled artisans in Maharashtra — delivered across India. Each piece carries the soul of genuine craftsmanship.
@@ -68,7 +68,7 @@ export default function Hero() {
                 { val: '100%', label: 'Handmade' },
               ].map(({ val, label }) => (
                 <div key={label} className="text-center">
-                  <p className="font-display text-3xl font-bold text-royal-saffron">{val}</p>
+                  <p className="font-display text-3xl font-bold text-royal-brown">{val}</p>
                   <p className="font-body text-sm text-royal-navy/70 mt-1">{label}</p>
                 </div>
               ))}
@@ -103,7 +103,7 @@ export default function Hero() {
             {/* Floating badge */}
             <div className="absolute -bottom-4 -left-4 bg-royal-bg border border-royal-border rounded-xl shadow-royal-md px-5 py-4">
               <p className="font-display text-royal-mahogany font-bold text-sm">Handcrafted in</p>
-              <p className="font-body text-royal-saffron font-semibold text-base">Maharashtra, India 🇮🇳</p>
+              <p className="font-body text-royal-brown font-semibold text-base">Maharashtra, India 🇮🇳</p>
             </div>
 
             {/* Gold corner accent */}

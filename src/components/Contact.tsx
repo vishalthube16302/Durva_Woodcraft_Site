@@ -42,7 +42,7 @@ export default function Contact() {
 
         {/* Heading */}
         <div className="text-center mb-14">
-          <p className="font-body text-royal-saffron font-semibold text-sm uppercase tracking-widest mb-3">
+          <p className="font-body text-royal-brown font-semibold text-sm uppercase tracking-widest mb-3">
             Reach Us
           </p>
           <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">
@@ -64,29 +64,29 @@ export default function Contact() {
                 <CheckCircle size={48} className="text-green-500" />
                 <p className="font-display text-xl font-bold text-royal-mahogany">Message Received!</p>
                 <p className="font-body text-royal-navy/70">We'll reply within 24 hours. You can also WhatsApp us for a faster response.</p>
-                <button onClick={() => setStatus('idle')} className="text-sm text-royal-saffron underline">Send another</button>
+                <button onClick={() => setStatus('idle')} className="text-sm text-royal-brown underline">Send another</button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                   name="name" value={form.name} onChange={handleChange}
                   type="text" placeholder="Your Name *" required
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron"
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown"
                 />
                 <input
                   name="email" value={form.email} onChange={handleChange}
                   type="email" placeholder="Email Address"
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron"
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown"
                 />
                 <input
                   name="phone" value={form.phone} onChange={handleChange}
                   type="tel" placeholder="Phone Number *" required
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron"
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown"
                 />
                 <textarea
                   name="message" value={form.message} onChange={handleChange}
                   placeholder="Your Message or Requirement" rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown resize-none"
                 />
                 {status === 'error' && (
                   <p className="text-red-500 text-sm font-body">Something went wrong. Please try WhatsApp instead.</p>

@@ -129,8 +129,8 @@ export default function Header() {
                   onClick={() => scrollToSection(item.id)}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-body font-semibold transition-all duration-200 ${
                     active
-                      ? 'bg-royal-saffron text-royal-bg shadow-md'
-                      : 'text-royal-mahogany hover:bg-royal-surface hover:text-royal-saffron'
+                      ? 'bg-royal-brown text-royal-bg shadow-md'
+                      : 'text-royal-mahogany hover:bg-royal-surface hover:text-royal-brown'
                   }`}
                 >
                   <Icon size={14} />
@@ -176,7 +176,7 @@ export default function Header() {
                   onClick={() => scrollToSection(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                     active
-                      ? 'bg-royal-saffron text-royal-bg'
+                      ? 'bg-royal-brown text-royal-bg'
                       : 'text-royal-mahogany hover:bg-royal-surface'
                   }`}
                 >

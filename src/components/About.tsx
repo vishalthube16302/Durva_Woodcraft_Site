@@ -26,7 +26,7 @@ export default function About() {
 
         {/* Heading */}
         <div className="text-center mb-14">
-          <p className="font-body text-royal-saffron font-semibold text-sm uppercase tracking-widest mb-3">
+          <p className="font-body text-royal-brown font-semibold text-sm uppercase tracking-widest mb-3">
             Our Story
           </p>
           <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">

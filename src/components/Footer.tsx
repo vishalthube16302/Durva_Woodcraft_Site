@@ -24,7 +24,7 @@ export default function Footer() {
     <footer className="bg-royal-mahogany text-royal-bg">
 
       {/* Top CTA banner */}
-      <div className="bg-royal-saffron py-5">
+      <div className="bg-royal-brown py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="font-display text-lg font-bold text-royal-bg">Ready to furnish your space?</p>
@@ -67,7 +67,7 @@ export default function Footer() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full flex items-center justify-center bg-royal-bg/10 hover:bg-royal-saffron transition-colors border border-royal-bg/20"
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-royal-bg/10 hover:bg-royal-brown transition-colors border border-royal-bg/20"
                 >
                   <Icon size={16} />
                 </a>
