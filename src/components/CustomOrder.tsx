@@ -58,7 +58,7 @@ export default function CustomOrder() {
 
         {/* Heading */}
         <div className="text-center mb-14">
-          <p className="font-body text-royal-saffron font-semibold text-sm uppercase tracking-widest mb-3">
+          <p className="font-body text-royal-brown font-semibold text-sm uppercase tracking-widest mb-3">
             Bespoke Furniture
           </p>
           <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">
@@ -74,10 +74,10 @@ export default function CustomOrder() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-14">
           {steps.map(({ icon: Icon, title, desc }, i) => (
             <div key={i} className="text-center p-5 rounded-2xl bg-royal-surface border border-royal-border">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-royal-saffron flex items-center justify-center text-white">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-royal-brown flex items-center justify-center text-white">
                 <Icon size={22} />
               </div>
-              <p className="font-body text-xs text-royal-saffron font-semibold mb-1">Step {i + 1}</p>
+              <p className="font-body text-xs text-royal-brown font-semibold mb-1">Step {i + 1}</p>
               <h4 className="font-display text-sm font-bold text-royal-mahogany mb-1">{title}</h4>
               <p className="font-body text-xs text-royal-navy/60 leading-relaxed">{desc}</p>
             </div>
@@ -99,39 +99,39 @@ export default function CustomOrder() {
                 <p className="font-body text-royal-navy/70 text-sm">
                   We've opened WhatsApp for you. If it didn't open, call us directly.
                 </p>
-                <button onClick={() => setStatus('idle')} className="text-sm text-royal-saffron underline">Submit another</button>
+                <button onClick={() => setStatus('idle')} className="text-sm text-royal-brown underline">Submit another</button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <input name="name" value={form.name} onChange={change} placeholder="Your Name *" required
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron col-span-2 sm:col-span-1" />
+                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown col-span-2 sm:col-span-1" />
                   <input name="phone" value={form.phone} onChange={change} placeholder="Phone Number *" required type="tel"
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron col-span-2 sm:col-span-1" />
+                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown col-span-2 sm:col-span-1" />
                 </div>
                 <input name="email" value={form.email} onChange={change} placeholder="Email (optional)" type="email"
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron" />
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown" />
                 <select name="furniture_type" value={form.furniture_type} onChange={change} required
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-saffron">
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-brown">
                   <option value="">Select Furniture Type *</option>
                   {FURNITURE.map(f => <option key={f} value={f}>{f}</option>)}
                 </select>
                 <div className="grid grid-cols-2 gap-4">
                   <select name="wood_type" value={form.wood_type} onChange={change}
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-saffron">
+                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-brown">
                     <option value="">Wood Type</option>
                     {WOOD_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
                   </select>
                   <select name="finish" value={form.finish} onChange={change}
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-saffron">
+                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-brown">
                     <option value="">Finish Type</option>
                     {FINISHES.map(f => <option key={f} value={f}>{f}</option>)}
                   </select>
                 </div>
                 <input name="dimensions" value={form.dimensions} onChange={change} placeholder="Dimensions (e.g. 6ft x 3ft x 2.5ft)"
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron" />
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown" />
                 <textarea name="notes" value={form.notes} onChange={change} rows={3} placeholder="Any special requirements, reference images, or notes..."
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-saffron resize-none" />
+                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown resize-none" />
 
                 {status === 'error' && <p className="text-red-500 text-sm font-body">Something went wrong. Please WhatsApp us directly.</p>}
 
@@ -174,7 +174,7 @@ export default function CustomOrder() {
                 ].map(({ label, time }) => (
                   <div key={label} className="flex justify-between items-center border-b border-royal-border pb-2 last:border-0 last:pb-0">
                     <span className="font-body text-sm text-royal-navy/70">{label}</span>
-                    <span className="font-body text-sm font-semibold text-royal-saffron">{time}</span>
+                    <span className="font-body text-sm font-semibold text-royal-brown">{time}</span>
                   </div>
                 ))}
               </div>

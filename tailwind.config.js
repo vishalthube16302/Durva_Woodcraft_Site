@@ -4,17 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Royal Craft — Primary Palette
         royal: {
-          bg:        '#FAF7F0', // Antique White — page background
-          surface:   '#F0E8D8', // Warm Beige — card surfaces
-          mahogany:  '#4A1C0A', // Mahogany — primary text & headings
-          saffron:   '#E8751A', // Deep Saffron — CTA buttons
-          navy:      '#1B2D4F', // Navy — badges, footer, secondary text
-          gold:      '#C9973A', // Gold — accent borders, highlights
-          amber:     '#E8B45A', // Amber — hover states
-          cream:     '#FDF8F0', // Cream — input backgrounds
-          border:    '#D4B896', // Tan — borders
+          bg:       '#FAF7F0', // Antique White — page background
+          surface:  '#F0E8D8', // Warm Beige — card surfaces
+          mahogany: '#4A1C0A', // Deep Mahogany — primary text & headings
+          brown:    '#8B4513', // Rich Brown — CTA buttons (replaces orange)
+          chocolate:'#D2691E', // Chocolate — hover states
+          navy:     '#1B2D4F', // Navy — badges, footer
+          gold:     '#C9973A', // Gold — accents, borders, highlights
+          amber:    '#E8B45A', // Amber — subtle highlights
+          cream:    '#FDF8F0', // Cream — input backgrounds
+          border:   '#D4B896', // Tan — borders
         },
       },
       fontFamily: {

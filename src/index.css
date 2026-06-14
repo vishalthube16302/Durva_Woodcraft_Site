@@ -8,17 +8,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS variables (kept for legacy inline style usage) ── */
 :root {
   --primary-color:   #4A1C0A;
   --secondary-color: #FAF7F0;
-  --accent-color:    #E8751A;
+  --accent-color:    #8B4513;
 }
 
-/* ── Base ── */
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Source Sans 3', system-ui, sans-serif;
@@ -31,33 +27,26 @@ h1, h2, h3, h4 {
   font-family: 'Libre Baskerville', Georgia, serif;
 }
 
-/* ── Utility classes ── */
-.royal-card {
-  background: #F0E8D8;
-  border: 1px solid #D4B896;
-  border-radius: 1rem;
-}
-
+/* ── Buttons ── */
 .royal-btn-primary {
-  background: #E8751A;
+  background: #8B4513;
   color: #FAF7F0;
   font-family: 'Source Sans 3', sans-serif;
   font-weight: 600;
   border-radius: 9999px;
   padding: 0.85rem 2rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(232,117,26,0.35);
+  box-shadow: 0 4px 14px rgba(139,69,19,0.30);
 }
-
 .royal-btn-primary:hover {
-  background: #C9973A;
-  box-shadow: 0 6px 20px rgba(232,117,26,0.45);
+  background: #6B3410;
+  box-shadow: 0 6px 20px rgba(139,69,19,0.40);
   transform: translateY(-1px);
 }
 
 .royal-btn-outline {
-  border: 2px solid #E8751A;
-  color: #E8751A;
+  border: 2px solid #8B4513;
+  color: #8B4513;
   font-family: 'Source Sans 3', sans-serif;
   font-weight: 600;
   border-radius: 9999px;
@@ -65,9 +54,8 @@ h1, h2, h3, h4 {
   background: transparent;
   transition: all 0.2s ease;
 }
-
 .royal-btn-outline:hover {
-  background: #E8751A;
+  background: #8B4513;
   color: #FAF7F0;
 }
 
@@ -77,11 +65,10 @@ h1, h2, h3, h4 {
 ::-webkit-scrollbar-thumb { background: #D4B896; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #C9973A; }
 
-/* ── Hide scrollbar for product row ── */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── WhatsApp float button ── */
+/* ── WhatsApp float ── */
 .wa-float {
   position: fixed;
   bottom: 24px;
@@ -99,33 +86,30 @@ h1, h2, h3, h4 {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   animation: wa-pulse 2.5s infinite;
 }
-
 .wa-float:hover {
   transform: scale(1.08);
   box-shadow: 0 6px 28px rgba(37,211,102,0.65);
 }
-
 @keyframes wa-pulse {
   0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
   50%       { box-shadow: 0 4px 32px rgba(37,211,102,0.8); }
 }
 
-/* ── Decorative divider ── */
+/* ── Divider ── */
 .royal-divider {
   height: 3px;
-  background: linear-gradient(90deg, transparent, #C9973A 30%, #E8751A 50%, #C9973A 70%, transparent);
+  background: linear-gradient(90deg, transparent, #C9973A 30%, #8B4513 50%, #C9973A 70%, transparent);
   border: none;
   margin: 0 auto;
 }
 
-/* ── Section heading with underline ── */
+/* ── Section heading ── */
 .section-heading {
   font-family: 'Libre Baskerville', serif;
   color: #4A1C0A;
   position: relative;
   display: inline-block;
 }
-
 .section-heading::after {
   content: '';
   position: absolute;
@@ -134,11 +118,11 @@ h1, h2, h3, h4 {
   transform: translateX(-50%);
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, #E8751A, #C9973A);
+  background: linear-gradient(90deg, #8B4513, #C9973A);
   border-radius: 2px;
 }
 
-/* ── Badge ── */
+/* ── Badges ── */
 .badge-handmade {
   display: inline-flex;
   align-items: center;
@@ -153,12 +137,11 @@ h1, h2, h3, h4 {
   padding: 4px 10px;
   border-radius: 4px;
 }
-
 .badge-msme {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #E8751A;
+  background: #8B4513;
   color: #FAF7F0;
   font-family: 'Source Sans 3', sans-serif;
   font-size: 0.7rem;

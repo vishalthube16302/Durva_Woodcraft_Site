@@ -25,7 +25,7 @@ export default function Products() {
 
         {/* Section heading */}
         <div className="text-center mb-14">
-          <p className="font-body text-royal-saffron font-semibold text-sm uppercase tracking-widest mb-3">
+          <p className="font-body text-royal-brown font-semibold text-sm uppercase tracking-widest mb-3">
             Our Collection
           </p>
           <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">
@@ -43,8 +43,8 @@ export default function Products() {
             onClick={() => setSelectedCategory(null)}
             className={`px-6 py-2.5 rounded-full text-sm font-semibold font-body transition-all duration-200 border ${
               selectedCategory === null
-                ? 'bg-royal-saffron text-royal-bg border-royal-saffron shadow-md'
-                : 'bg-royal-bg text-royal-mahogany border-royal-border hover:border-royal-saffron hover:text-royal-saffron'
+                ? 'bg-royal-brown text-royal-bg border-royal-brown shadow-md'
+                : 'bg-royal-bg text-royal-mahogany border-royal-border hover:border-royal-brown hover:text-royal-brown'
             }`}
           >
             All Products
@@ -55,8 +55,8 @@ export default function Products() {
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-6 py-2.5 rounded-full text-sm font-semibold font-body transition-all duration-200 border ${
                 selectedCategory === cat.id
-                  ? 'bg-royal-saffron text-royal-bg border-royal-saffron shadow-md'
-                  : 'bg-royal-bg text-royal-mahogany border-royal-border hover:border-royal-saffron hover:text-royal-saffron'
+                  ? 'bg-royal-brown text-royal-bg border-royal-brown shadow-md'
+                  : 'bg-royal-bg text-royal-mahogany border-royal-border hover:border-royal-brown hover:text-royal-brown'
               }`}
             >
               {cat.name}
@@ -91,7 +91,7 @@ export default function Products() {
 
                 {/* Info */}
                 <div className="p-5 border-t border-royal-border">
-                  <h3 className="font-display text-lg font-bold text-royal-mahogany mb-1 group-hover:text-royal-saffron transition-colors truncate">
+                  <h3 className="font-display text-lg font-bold text-royal-mahogany mb-1 group-hover:text-royal-brown transition-colors truncate">
                     {product.name}
                   </h3>
                   <p className="font-body text-sm text-royal-navy/60 mb-4 line-clamp-2">
@@ -99,12 +99,12 @@ export default function Products() {
                   </p>
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="font-display text-2xl font-bold text-royal-saffron">
+                      <p className="font-display text-2xl font-bold text-royal-brown">
                         ₹{product.price.toLocaleString('en-IN')}
                       </p>
                       <p className="font-body text-xs text-royal-navy/50">+ GST | Free Delivery</p>
                     </div>
-                    <span className="flex items-center gap-1.5 text-xs font-semibold font-body text-royal-saffron group-hover:gap-2.5 transition-all">
+                    <span className="flex items-center gap-1.5 text-xs font-semibold font-body text-royal-brown group-hover:gap-2.5 transition-all">
                       View Details <ArrowRight size={14} />
                     </span>
                   </div>
