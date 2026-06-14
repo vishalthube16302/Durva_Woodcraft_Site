@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Phone, Mail, Home, Package, Info, MessageCircle, Hammer, ChevronUp } from 'lucide-react';
+import { Menu, X, Phone, Mail, Home, Package, Info, MessageCircle, Hammer, ChevronUp, Building2 } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 import { getImageUrl } from '../utils/imageUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -18,6 +18,7 @@ export default function Header() {
     { id: 'products',     label: 'Products',     icon: Package },
     { id: 'custom-order', label: 'Custom Order', icon: Hammer },
     { id: 'about',        label: 'About Us',     icon: Info },
+    { id: 'corporate',    label: 'Bulk Orders',  icon: Building2 },
     { id: 'contact',      label: 'Contact',      icon: Phone },
   ];
 
