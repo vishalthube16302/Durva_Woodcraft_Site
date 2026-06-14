@@ -1,155 +1,214 @@
 import { useState, useEffect } from 'react';
-import { Save } from 'lucide-react';
+import { Save, CheckCircle, AlertCircle, Award, Globe, Phone, Mail, MapPin, Link, Building2 } from 'lucide-react';
 import { supabase, Settings } from '../../lib/supabase';
 import { useSettings } from '../../hooks/useSettings';
 
 export default function SettingsPanel() {
-  const { settings: currentSettings, refetch } = useSettings();
-  const [formData, setFormData] = useState<Partial<Settings>>({});
+  const { settings: current, refetch } = useSettings();
+  const [form, setForm]     = useState<Partial<Settings>>({});
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [msg, setMsg]       = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  useEffect(() => {
-    if (currentSettings) {
-      setFormData(currentSettings);
-    }
-  }, [currentSettings]);
+  useEffect(() => { if (current) setForm(current); }, [current]);
+
+  const set = (key: keyof Settings, val: string) =>
+    setForm(prev => ({ ...prev, [key]: val }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
-
+    setMsg(null);
     try {
       const { error } = await supabase
         .from('settings')
-        .update({
-          ...formData,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', currentSettings?.id);
-
+        .update({ ...form, updated_at: new Date().toISOString() })
+        .eq('id', current?.id);
       if (error) throw error;
-
-      setMessage({ type: 'success', text: 'Settings updated!' });
+      setMsg({ type: 'success', text: 'Settings saved successfully!' });
       refetch();
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to update settings' });
+    } catch {
+      setMsg({ type: 'error', text: 'Failed to save. Please try again.' });
     } finally {
       setSaving(false);
     }
   };
 
-  if (!currentSettings) return null;
+  if (!current) return null;
+
+  const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-royal-border bg-royal-cream font-body text-sm text-royal-mahogany placeholder-royal-navy/30 focus:outline-none focus:border-royal-brown focus:ring-2 focus:ring-royal-brown/15 transition-all';
+  const labelCls = 'block font-body text-xs font-semibold text-royal-navy uppercase tracking-widest mb-1.5';
+
+  const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
+    <div className="bg-royal-bg rounded-2xl border border-royal-border p-6 space-y-4">
+      <div className="flex items-center gap-2.5 pb-4 border-b border-royal-border">
+        <div className="w-8 h-8 rounded-lg bg-royal-surface flex items-center justify-center flex-shrink-0">
+          <Icon size={16} className="text-royal-brown" />
+        </div>
+        <h3 className="font-display text-base font-bold text-royal-mahogany">{title}</h3>
+      </div>
+      {children}
+    </div>
+  );
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8">
-      <h2 className="text-2xl font-bold mb-6" style={{ color: currentSettings.primary_color }}>
-        Website Settings
-      </h2>
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-display text-2xl font-bold text-royal-mahogany">Website Settings</h2>
+        <p className="font-body text-sm text-royal-navy/50 mt-1">
+          All fields update the live website instantly after saving.
+        </p>
+      </div>
 
-      {message && (
-        <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-          {message.text}
+      {msg && (
+        <div className={`flex items-center gap-3 p-4 rounded-xl border font-body text-sm ${
+          msg.type === 'success'
+            ? 'bg-green-50 border-green-200 text-green-800'
+            : 'bg-red-50 border-red-200 text-red-800'
+        }`}>
+          {msg.type === 'success'
+            ? <CheckCircle size={18} className="text-green-600 flex-shrink-0" />
+            : <AlertCircle size={18} className="text-red-500 flex-shrink-0" />
+          }
+          {msg.text}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
-          <input
-            type="text"
-            value={formData.brand_name || ''}
-            onChange={(e) => setFormData({ ...formData, brand_name: e.target.value })}
-            placeholder="Brand Name"
-            className="px-4 py-3 rounded-lg border border-gray-300"
-          />
-          <input
-            type="text"
-            value={formData.tagline || ''}
-            onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-            placeholder="Tagline"
-            className="px-4 py-3 rounded-lg border border-gray-300"
-          />
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Logo Filename (or URL)</label>
-          <input
-            type="text"
-            value={formData.logo_url || ''}
-            onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-            placeholder="e.g. logo.png or https://..."
-            className="w-full px-4 py-3 rounded-lg border border-gray-300"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            For local images, upload to <code>public/images/</code> and type filename here.
+        {/* ── Brand ─────────────────────────────────────────────── */}
+        <Section icon={Globe} title="Brand Identity">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Brand Name</label>
+              <input className={inputCls} type="text" value={form.brand_name || ''} onChange={e => set('brand_name', e.target.value)} placeholder="Durva Woodcraft" />
+            </div>
+            <div>
+              <label className={labelCls}>Tagline</label>
+              <input className={inputCls} type="text" value={form.tagline || ''} onChange={e => set('tagline', e.target.value)} placeholder="Honoring Nature, Crafting Life" />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>Logo (filename or URL)</label>
+            <input className={inputCls} type="text" value={form.logo_url || ''} onChange={e => set('logo_url', e.target.value)} placeholder="logo.png" />
+            <p className="font-body text-xs text-royal-navy/40 mt-1">Upload to <code>public/images/</code> and enter filename. Or paste a full URL.</p>
+          </div>
+        </Section>
+
+        {/* ── Contact ───────────────────────────────────────────── */}
+        <Section icon={Phone} title="Contact Details">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Phone Number (call)</label>
+              <input className={inputCls} type="tel" value={form.phone_numbers?.[0] || ''} onChange={e => set('phone_numbers', [e.target.value] as any)} placeholder="+91 9XXXXXXXXX" />
+            </div>
+            <div>
+              <label className={labelCls}>WhatsApp Number</label>
+              <input className={inputCls} type="tel" value={form.whatsapp_number || ''} onChange={e => set('whatsapp_number', e.target.value)} placeholder="919XXXXXXXXX (with country code, no +)" />
+              <p className="font-body text-xs text-royal-navy/40 mt-1">Used for all WhatsApp links. Format: 919XXXXXXXXX</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Email Address</label>
+              <input className={inputCls} type="email" value={form.email || ''} onChange={e => set('email', e.target.value)} placeholder="contact@durvawoodcraft.in" />
+            </div>
+            <div>
+              <label className={labelCls}>Website URL</label>
+              <input className={inputCls} type="url" value={form.website || ''} onChange={e => set('website', e.target.value)} placeholder="https://durvawoodcraft.in" />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>Full Address</label>
+            <textarea className={inputCls + ' resize-none'} rows={2} value={form.address || ''} onChange={e => set('address', e.target.value)} placeholder="Workshop address, Nashik, Maharashtra 422001" />
+          </div>
+        </Section>
+
+        {/* ── Government Credentials ────────────────────────────── */}
+        <Section icon={Award} title="Government & Business Credentials">
+          <div className="bg-royal-surface/50 rounded-xl p-4 border border-royal-border mb-2">
+            <p className="font-body text-xs text-royal-navy/60 leading-relaxed">
+              These appear on the website's footer, About section, and Government/Bulk Orders page.
+              Government officers verify these numbers — keep them accurate.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div>
+              <label className={labelCls}>MSME / Udyam Number</label>
+              <input className={inputCls} type="text" value={form.msme_number || ''} onChange={e => set('msme_number', e.target.value)} placeholder="MH-01-0084519" />
+              <p className="font-body text-xs text-royal-navy/40 mt-1">Your confirmed number: MH-01-0084519</p>
+            </div>
+            <div>
+              <label className={labelCls}>GST Number (GSTIN)</label>
+              <input className={inputCls} type="text" value={form.gst_number || ''} onChange={e => set('gst_number', e.target.value)} placeholder="27XXXXXXXXXXXXX" />
+              <p className="font-body text-xs text-royal-navy/40 mt-1">15-digit GSTIN from GST portal</p>
+            </div>
+            <div>
+              <label className={labelCls}>GeM Seller ID</label>
+              <input className={inputCls} type="text" value={form.gem_seller_id || ''} onChange={e => set('gem_seller_id', e.target.value)} placeholder="GeM-XXXX-XXXX" />
+              <p className="font-body text-xs text-royal-navy/40 mt-1">Leave blank until registered on gem.gov.in</p>
+            </div>
+          </div>
+        </Section>
+
+        {/* ── Social Media ──────────────────────────────────────── */}
+        <Section icon={Link} title="Social Media Links">
+          <div className="bg-royal-surface/50 rounded-xl p-4 border border-royal-border mb-2">
+            <p className="font-body text-xs text-royal-navy/60">
+              Full URLs for your social profiles. These appear in the website footer. Leave blank to hide an icon.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div>
+              <label className={labelCls}>Instagram</label>
+              <input className={inputCls} type="url" value={form.instagram_url || ''} onChange={e => set('instagram_url', e.target.value)} placeholder="https://instagram.com/durvawoodcraft" />
+            </div>
+            <div>
+              <label className={labelCls}>Facebook</label>
+              <input className={inputCls} type="url" value={form.facebook_url || ''} onChange={e => set('facebook_url', e.target.value)} placeholder="https://facebook.com/durvawoodcraft" />
+            </div>
+            <div>
+              <label className={labelCls}>YouTube</label>
+              <input className={inputCls} type="url" value={form.youtube_url || ''} onChange={e => set('youtube_url', e.target.value)} placeholder="https://youtube.com/@durvawoodcraft" />
+            </div>
+          </div>
+        </Section>
+
+        {/* ── Theme Colors ──────────────────────────────────────── */}
+        <Section icon={Globe} title="Theme Colors">
+          <p className="font-body text-xs text-royal-navy/50">
+            Royal Craft theme colors are fixed in code. Color pickers below update CSS variables for accent overrides only.
           </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">Primary Color</label>
-            <input
-              type="color"
-              value={formData.primary_color || '#8B4513'}
-              onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })}
-              className="w-full h-12 rounded border"
-            />
+          <div className="grid grid-cols-3 gap-4">
+            {[
+              { key: 'primary_color',   label: 'Primary',   default: '#8B4513' },
+              { key: 'secondary_color', label: 'Secondary', default: '#D2691E' },
+              { key: 'accent_color',    label: 'Accent',    default: '#C9973A' },
+            ].map(({ key, label, default: def }) => (
+              <div key={key}>
+                <label className={labelCls}>{label}</label>
+                <input type="color"
+                  value={(form as any)[key] || def}
+                  onChange={e => set(key as keyof Settings, e.target.value)}
+                  className="w-full h-11 rounded-xl border border-royal-border cursor-pointer"
+                />
+              </div>
+            ))}
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Secondary Color</label>
-            <input
-              type="color"
-              value={formData.secondary_color || '#D2691E'}
-              onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })}
-              className="w-full h-12 rounded border"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Accent Color</label>
-            <input
-              type="color"
-              value={formData.accent_color || '#F4A460'}
-              onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
-              className="w-full h-12 rounded border"
-            />
-          </div>
-        </div>
+        </Section>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <input
-            type="email"
-            value={formData.email || ''}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            placeholder="Email"
-            className="px-4 py-3 rounded-lg border border-gray-300"
-          />
-          <input
-            type="url"
-            value={formData.website || ''}
-            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-            placeholder="Website"
-            className="px-4 py-3 rounded-lg border border-gray-300"
-          />
-        </div>
-
-        <textarea
-          value={formData.address || ''}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          placeholder="Address"
-          rows={3}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 resize-none"
-        />
-
-        <div className="flex justify-end">
+        {/* ── Save button ───────────────────────────────────────── */}
+        <div className="flex justify-end pt-2">
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center space-x-2 px-8 py-3 rounded-lg text-white font-medium disabled:opacity-50"
-            style={{ backgroundColor: currentSettings.primary_color }}
+            className="flex items-center gap-2 px-8 py-3 rounded-full bg-royal-brown text-royal-bg font-body font-semibold text-sm hover:bg-royal-chocolate transition-all shadow-royal-sm hover:shadow-royal-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save size={18} />
-            <span>{saving ? 'Saving...' : 'Save Settings'}</span>
+            {saving ? (
+              <div className="w-4 h-4 border-2 border-royal-bg/30 border-t-royal-bg rounded-full animate-spin" />
+            ) : (
+              <Save size={16} />
+            )}
+            {saving ? 'Saving...' : 'Save All Settings'}
           </button>
         </div>
       </form>
