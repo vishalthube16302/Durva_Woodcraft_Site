@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Phone, Mail, Home, Package, Info } from 'lucide-react';
+import { Menu, X, Phone, Mail, Home, Package, Info, MessageCircle, Hammer } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 import { getImageUrl } from '../utils/imageUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,37 +13,28 @@ export default function Header() {
   const navigate = useNavigate();
 
   const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'products', label: 'Products', icon: Package },
-    { id: 'about', label: 'About', icon: Info },
-    { id: 'contact', label: 'Contact', icon: Phone },
+    { id: 'home',         label: 'Home',         icon: Home },
+    { id: 'products',     label: 'Products',     icon: Package },
+    { id: 'custom-order', label: 'Custom Order', icon: Hammer },
+    { id: 'about',        label: 'About Us',     icon: Info },
+    { id: 'contact',      label: 'Contact',      icon: Phone },
   ];
 
   useEffect(() => {
-    // Check for hash in URL to scroll after navigation
     if (location.pathname === '/' && location.hash) {
       const id = location.hash.replace('#', '');
-
-      // Retry mechanism to wait for content to load
       let attempts = 0;
-      const maxAttempts = 20; // 2 seconds max
-
       const tryScroll = () => {
-        const element = document.getElementById(id);
-        if (element) {
-          // Add a small offset for the fixed header
-          const yOffset = -80;
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
+        const el = document.getElementById(id);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.pageYOffset - 88;
           window.scrollTo({ top: y, behavior: 'smooth' });
           setActiveSection(id);
-        } else if (attempts < maxAttempts) {
+        } else if (attempts < 20) {
           attempts++;
           setTimeout(tryScroll, 100);
         }
       };
-
-      // Initial small delay to allow partial rendering
       setTimeout(tryScroll, 100);
     }
   }, [location]);
@@ -51,58 +42,65 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-
       if (location.pathname !== '/') return;
-
-      const scrollPosition = window.scrollY + 100;
-
-      // Default to home if at top
-      if (window.scrollY < 50) {
-        setActiveSection('home');
-        return;
-      }
-
+      if (window.scrollY < 50) { setActiveSection('home'); return; }
+      const scrollPos = window.scrollY + 110;
       for (const item of navItems) {
-        const element = document.getElementById(item.id);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          const { offsetTop, offsetHeight } = el;
+          if (scrollPos >= offsetTop && scrollPos < offsetTop + offsetHeight) {
             setActiveSection(item.id);
           }
         }
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location.pathname]);
 
   const scrollToSection = (id: string) => {
     setIsMenuOpen(false);
-
-    if (location.pathname !== '/') {
-      navigate(`/#${id}`);
-      return;
-    }
-
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      // Update active section immediately for better UX
-      setActiveSection(id);
-    }
+    if (location.pathname !== '/') { navigate(`/#${id}`); return; }
+    const el = document.getElementById(id);
+    if (el) { el.scrollIntoView({ behavior: 'smooth' }); setActiveSection(id); }
   };
 
   if (!settings) return null;
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-sm'
-        }`}
-    >
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled
+        ? 'bg-royal-bg shadow-royal-md border-b border-royal-border'
+        : 'bg-royal-bg/96 backdrop-blur-sm'
+    }`}>
+
+      {/* Top info bar */}
+      <div className="hidden lg:block bg-royal-navy text-royal-bg text-xs py-1.5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-1.5">
+              <Phone size={12} />
+              {settings.phone_numbers?.[0]}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Mail size={12} />
+              {settings.email}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="badge-handmade">🪵 Handcrafted in Maharashtra</span>
+            <span className="badge-msme">MSME Registered</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main nav */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center space-x-4">
+        <div className="flex justify-between items-center py-3">
+
+          {/* Logo + Brand */}
+          <button onClick={() => scrollToSection('home')} className="flex items-center gap-3">
             {settings.logo_url && (
               <img
                 src={getImageUrl(settings.logo_url)}
@@ -110,100 +108,96 @@ export default function Header() {
                 className="h-12 w-auto object-contain"
               />
             )}
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: settings.primary_color }}>
+            <div className="text-left">
+              <div className="font-display text-xl font-bold text-royal-mahogany leading-tight">
                 {settings.brand_name}
-              </h1>
-              <p className="text-sm text-gray-600">{settings.tagline}</p>
+              </div>
+              <div className="text-xs text-royal-gold font-body tracking-wide">
+                {settings.tagline}
+              </div>
             </div>
-          </div>
+          </button>
 
-          <nav className="hidden md:flex items-center space-x-4">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activeSection === item.id;
+              const active = activeSection === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center gap-2 px-5 py-2 rounded-full transition-all duration-300 font-medium text-sm ${isActive
-                    ? 'text-white shadow-md transform scale-105'
-                    : 'text-gray-700 hover:bg-gray-100/50'
-                    }`}
-                  style={isActive ? { backgroundColor: settings.primary_color } : {}}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-body font-semibold transition-all duration-200 ${
+                    active
+                      ? 'bg-royal-saffron text-royal-bg shadow-md'
+                      : 'text-royal-mahogany hover:bg-royal-surface hover:text-royal-saffron'
+                  }`}
                 >
-                  <Icon size={16} />
-                  <span>{item.label}</span>
+                  <Icon size={14} />
+                  {item.label}
                 </button>
               );
             })}
+
+            {/* WhatsApp CTA in nav */}
             <a
-              href="/admin"
-              className="px-6 py-2 rounded-full text-white transition-all hover:shadow-lg ml-4 text-sm font-medium"
-              style={{ backgroundColor: settings.primary_color }}
+              href={`https://wa.me/${settings.phone_numbers?.[0]?.replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white ml-2 transition-all"
+              style={{ backgroundColor: '#25D366' }}
             >
-              Admin
+              <MessageCircle size={14} />
+              WhatsApp
             </a>
           </nav>
 
+          {/* Mobile menu toggle */}
           <button
-            className="md:hidden p-2 text-gray-700"
+            className="md:hidden p-2 text-royal-mahogany"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-4 py-4 space-y-2">
+        <div className="md:hidden bg-royal-bg border-t border-royal-border shadow-royal-md">
+          <div className="px-4 py-4 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activeSection === item.id;
+              const active = activeSection === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm ${isActive
-                    ? 'text-white shadow-md'
-                    : 'text-gray-700 hover:bg-gray-50'
-                    }`}
-                  style={isActive ? { backgroundColor: settings.primary_color } : {}}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                    active
+                      ? 'bg-royal-saffron text-royal-bg'
+                      : 'text-royal-mahogany hover:bg-royal-surface'
+                  }`}
                 >
                   <Icon size={18} />
-                  <span className="font-medium">{item.label}</span>
+                  {item.label}
                 </button>
               );
             })}
             <a
-              href="/admin"
-              className="block w-full text-center px-4 py-3 rounded-xl text-white mt-4 font-medium shadow-md text-sm"
-              style={{ backgroundColor: settings.primary_color }}
+              href={`https://wa.me/${settings.phone_numbers?.[0]?.replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-semibold mt-2"
+              style={{ backgroundColor: '#25D366' }}
             >
-              Admin Panel
+              <MessageCircle size={18} />
+              Chat on WhatsApp
             </a>
           </div>
         </div>
       )}
-
-      <div className="hidden lg:block border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Phone size={16} />
-                <span>{settings.phone_numbers[0]}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Mail size={16} />
-                <span>{settings.email}</span>
-              </div>
-            </div>
-            <div>{settings.address}</div>
-          </div>
-        </div>
-      </div>
     </header>
   );
 }
