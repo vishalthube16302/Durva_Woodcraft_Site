@@ -1,81 +1,190 @@
-import { Award, Hammer, Heart, Leaf, Users, MapPin } from 'lucide-react';
+import { Award, Hammer, Heart, Leaf, Users, MapPin, Shield, Star, TrendingUp } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 
 export default function About() {
   const { settings } = useSettings();
-
   if (!settings) return null;
 
   const features = [
-    { icon: Hammer, title: 'Master Craftsmanship', description: 'Every joint, curve, and finish is done by hand by skilled artisans with decades of experience.' },
-    { icon: Leaf,   title: 'Sustainable Wood',     description: 'We use premium, responsibly sourced Sheesham, Teak, and Mango wood for lasting quality.' },
-    { icon: Heart,  title: 'Made with Passion',    description: 'Each creation carries the dedication of a craftsman who takes pride in every detail.' },
-    { icon: Award,  title: 'Quality Guaranteed',   description: 'MSME certified. Every piece inspected before dispatch. Your satisfaction is our promise.' },
+    {
+      icon: Hammer,
+      title: 'Master Craftsmanship',
+      description: 'Every joint, curve, and finish is done by hand by skilled artisans with decades of experience.'
+    },
+    {
+      icon: Leaf,
+      title: 'Sustainable Wood',
+      description: 'We use premium, responsibly sourced Sheesham, Teak, and Mango wood for lasting quality.'
+    },
+    {
+      icon: Heart,
+      title: 'Made with Soul',
+      description: 'Each piece carries the warmth of human hands — no machine can replicate the character of true handcraft.'
+    },
+    {
+      icon: Users,
+      title: 'Family Legacy',
+      description: 'Rooted in Maharashtra''s rich woodworking tradition, we bring generations of craft knowledge to every order.'
+    },
   ];
 
   const credentials = [
-    { icon: Award,  label: 'MSME / Udyam Registered' },
-    { icon: MapPin, label: 'Made in Maharashtra' },
-    { icon: Users,  label: '1000+ Happy Customers' },
-    { icon: Hammer, label: '25+ Years of Craft' },
+    { icon: Award,    label: 'MSME Registered',         sub: 'Udyam Certificate Holder' },
+    { icon: Shield,   label: 'GST Registered',          sub: 'Pan-India B2B & B2C Invoicing' },
+    { icon: Star,     label: 'PM Vishwakarma Certified', sub: 'Ministry of MSME, Govt of India' },
+    { icon: TrendingUp, label: 'IndiaHandmade Listed',  sub: 'Digital India Corporation Portal' },
+  ];
+
+  const woodTypes = [
+    { name: 'Sheesham',   hindi: 'शीशम',  desc: 'Most popular. Hard, durable, beautiful grain pattern. Ideal for all furniture.', color: '#7B3F00' },
+    { name: 'Teak',       hindi: 'सागवान', desc: 'Premium grade. Water resistant. Long-lasting. Best for outdoor + premium interiors.', color: '#8B6914' },
+    { name: 'Mango Wood', hindi: 'आंबा',   desc: 'Eco-friendly. Unique grain. Affordable yet premium. Great for decor items.', color: '#5C3317' },
+    { name: 'Sal Wood',   hindi: 'साल',    desc: 'Strong and heavy. Traditional Indian wood. Excellent for structural furniture.', color: '#4A2810' },
   ];
 
   return (
-    <section id="about" className="py-20 bg-royal-bg">
+    <section id="about" className="py-20 bg-royal-surface/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Heading */}
+        {/* Section header */}
         <div className="text-center mb-14">
-          <p className="font-body text-royal-brown font-semibold text-sm uppercase tracking-widest mb-3">
+          <p className="font-body text-royal-brown font-semibold text-xs uppercase tracking-widest mb-3">
             Our Story
           </p>
-          <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">
-            Crafting Excellence Since Generations
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-royal-mahogany mb-4">
+            Honoring Maharashtra's<br />Woodcraft Heritage
           </h2>
-          <hr className="royal-divider w-24 mt-10 mb-4" />
-          <p className="font-body text-royal-navy/70 max-w-2xl mx-auto">
-            Durva Woodcraft was born from a love of wood and the art of shaping it. Based in Maharashtra, we combine traditional Indian carpentry with modern design sensibility to create furniture that lasts a lifetime.
-          </p>
+          <hr className="royal-divider w-20 mx-auto mt-2" />
         </div>
 
-        {/* Features grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {features.map((f, i) => (
-            <div
-              key={i}
-              className="text-center p-6 rounded-2xl bg-royal-surface border border-royal-border hover:shadow-royal-md transition-shadow"
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full flex items-center justify-center bg-royal-mahogany text-royal-bg">
-                <f.icon size={26} />
-              </div>
-              <h3 className="font-display text-base font-bold text-royal-mahogany mb-2">{f.title}</h3>
-              <p className="font-body text-sm text-royal-navy/70 leading-relaxed">{f.description}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Government / Credibility strip */}
-        <div className="bg-royal-navy rounded-2xl p-8">
-          <div className="text-center mb-8">
-            <h3 className="font-display text-2xl font-bold text-royal-bg mb-2">
-              Government Recognized & Certified
-            </h3>
-            <p className="font-body text-royal-bg/70 text-sm">
-              Durva Woodcraft is a registered MSME under the Government of India — eligible for bulk, institutional, and government procurement orders.
+        {/* Story + Image */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+          <div>
+            <p className="font-body text-royal-navy/70 leading-relaxed mb-5 text-base">
+              Durva Woodcraft was born from a passion for preserving Maharashtra's rich tradition of woodworking.
+              Based in Nashik, we create handcrafted wooden furniture that blends timeless craft with the demands
+              of modern living — custom-built to your exact specifications, delivered across India.
             </p>
+            <p className="font-body text-royal-navy/70 leading-relaxed mb-6 text-base">
+              Every piece we create is a testament to the skill passed down through generations of craftsmen —
+              from raw timber selection to final polish, nothing leaves our workshop until it meets our standard
+              of excellence. No mass production. No shortcuts.
+            </p>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              {[
+                { num: '25+', label: 'Years of Craft' },
+                { num: '500+', label: 'Happy Families' },
+                { num: '100%', label: 'Handmade' },
+              ].map(({ num, label }) => (
+                <div key={label} className="text-center p-4 bg-royal-bg rounded-xl border border-royal-border">
+                  <p className="font-display text-2xl font-bold text-royal-brown">{num}</p>
+                  <p className="font-body text-xs text-royal-navy/60 mt-1">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 text-sm font-body text-royal-navy/60">
+              <MapPin size={15} className="text-royal-gold flex-shrink-0" />
+              <span>Workshop in <strong className="text-royal-mahogany">Nashik, Maharashtra</strong> · Delivering Pan-India</span>
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {credentials.map(({ icon: Icon, label }) => (
+
+          {/* Features grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {features.map(({ icon: Icon, title, description }) => (
               <div
-                key={label}
-                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/10 border border-white/20 text-center"
+                key={title}
+                className="bg-royal-bg rounded-2xl p-5 border border-royal-border shadow-royal-sm hover:shadow-royal-md transition-shadow"
               >
-                <Icon size={22} className="text-royal-gold" />
-                <span className="font-body text-sm text-royal-bg font-semibold">{label}</span>
+                <div className="w-10 h-10 rounded-xl bg-royal-surface flex items-center justify-center mb-3">
+                  <Icon size={20} className="text-royal-brown" />
+                </div>
+                <h3 className="font-display text-sm font-bold text-royal-mahogany mb-1">{title}</h3>
+                <p className="font-body text-xs text-royal-navy/60 leading-relaxed">{description}</p>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Government Credibility Section */}
+        <div className="bg-royal-navy rounded-2xl p-8 mb-16">
+          <div className="text-center mb-8">
+            <p className="font-body text-royal-gold font-semibold text-xs uppercase tracking-widest mb-2">
+              Official Recognition
+            </p>
+            <h3 className="font-display text-2xl font-bold text-royal-bg">
+              Government Certified & Registered
+            </h3>
+            <p className="font-body text-royal-bg/60 text-sm mt-2 max-w-lg mx-auto">
+              Durva Woodcraft is formally registered with the Government of India — eligible for government
+              tenders, bulk orders, and institutional supply.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {credentials.map(({ icon: Icon, label, sub }) => (
+              <div
+                key={label}
+                className="bg-royal-bg/8 border border-royal-bg/15 rounded-xl p-5 text-center hover:bg-royal-bg/12 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-full bg-royal-gold/20 flex items-center justify-center mx-auto mb-3">
+                  <Icon size={18} className="text-royal-gold" />
+                </div>
+                <p className="font-body text-sm font-semibold text-royal-bg">{label}</p>
+                <p className="font-body text-xs text-royal-bg/50 mt-1">{sub}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA for govt buyers */}
+          <div className="mt-8 pt-6 border-t border-royal-bg/15 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p className="font-display text-base font-bold text-royal-bg">Government & Bulk Orders Welcome</p>
+              <p className="font-body text-sm text-royal-bg/60">GST invoicing · MSME rates · Institutional supply capability</p>
+            </div>
+            <a
+              href="https://wa.me/91XXXXXXXXXX?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20a%20bulk%2Fgovernment%20order."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 py-3 rounded-full bg-royal-gold text-royal-mahogany font-semibold font-body text-sm whitespace-nowrap hover:bg-amber-400 transition-colors"
+            >
+              Enquire for Bulk Order →
+            </a>
+          </div>
+        </div>
+
+        {/* Wood Types showcase */}
+        <div>
+          <div className="text-center mb-8">
+            <p className="font-body text-royal-brown font-semibold text-xs uppercase tracking-widest mb-2">
+              Our Materials
+            </p>
+            <h3 className="font-display text-2xl font-bold text-royal-mahogany">
+              Premium Wood We Work With
+            </h3>
+            <hr className="royal-divider w-16 mx-auto mt-4" />
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {woodTypes.map(({ name, hindi, desc, color }) => (
+              <div
+                key={name}
+                className="rounded-2xl overflow-hidden border border-royal-border shadow-royal-sm hover:shadow-royal-md transition-all hover:-translate-y-0.5"
+              >
+                {/* Wood colour swatch */}
+                <div className="h-20 w-full" style={{ backgroundColor: color }} />
+                <div className="p-4 bg-royal-bg">
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <h4 className="font-display text-base font-bold text-royal-mahogany">{name}</h4>
+                    <span className="font-body text-xs text-royal-navy/40">{hindi}</span>
+                  </div>
+                  <p className="font-body text-xs text-royal-navy/60 leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );
