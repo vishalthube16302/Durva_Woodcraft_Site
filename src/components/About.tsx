@@ -10,46 +10,21 @@ export default function About() {
   const features = [
     { icon: Hammer, title: 'Master Craftsmanship',
       description: 'Every joint, curve, and finish is done by hand by skilled artisans with decades of experience.' },
-    { icon: Leaf, title: 'Sustainable Wood',
+    { icon: Leaf,   title: 'Sustainable Wood',
       description: 'We use premium, responsibly sourced Sheesham, Teak, and Mango wood for lasting quality.' },
-    { icon: Heart, title: 'Made with Soul',
+    { icon: Heart,  title: 'Made with Soul',
       description: "Each piece carries the warmth of human hands — no machine can replicate the character of true handcraft." },
-    { icon: Users, title: 'Family Legacy',
+    { icon: Users,  title: 'Family Legacy',
       description: "Rooted in Maharashtra's rich woodworking tradition, we bring generations of craft knowledge to every order." },
   ];
 
-  // Credentials — built from DB values, show only what's filled
+  // Credential cards — only show rows with filled DB values
   const credentials = [
-    settings.msme_number && {
-      icon: Award,
-      label: 'MSME / Udyam Registered',
-      value: settings.msme_number,
-      sub: 'Udyam Certificate Holder'
-    },
-    settings.gst_number && {
-      icon: Shield,
-      label: 'GST Registered',
-      value: settings.gst_number,
-      sub: 'Pan-India B2B & B2C Invoicing'
-    },
-    {
-      icon: Star,
-      label: 'PM Vishwakarma Certified',
-      value: null,
-      sub: 'Ministry of MSME, Govt of India'
-    },
-    settings.gem_seller_id && {
-      icon: TrendingUp,
-      label: 'GeM Portal Listed',
-      value: settings.gem_seller_id,
-      sub: 'Government e-Marketplace'
-    },
-    !settings.gem_seller_id && {
-      icon: TrendingUp,
-      label: 'IndiaHandmade Listed',
-      value: null,
-      sub: 'Digital India Corporation Portal'
-    },
+    settings.msme_number  && { icon: Award,       label: 'MSME / Udyam Registered', value: settings.msme_number,  sub: 'Udyam Certificate Holder' },
+    settings.gst_number   && { icon: Shield,      label: 'GST Registered',           value: settings.gst_number,   sub: 'Pan-India B2B & B2C Invoicing' },
+                              { icon: Star,        label: 'PM Vishwakarma Certified', value: null,                  sub: 'Ministry of MSME, Govt of India' },
+    settings.gem_seller_id && { icon: TrendingUp, label: 'GeM Portal Listed',        value: settings.gem_seller_id, sub: 'Government e-Marketplace' },
+    !settings.gem_seller_id && { icon: TrendingUp, label: 'IndiaHandmade Listed',    value: null,                  sub: 'Digital India Corporation Portal' },
   ].filter(Boolean) as { icon: any; label: string; value: string | null; sub: string }[];
 
   const woodTypes = [
@@ -63,7 +38,6 @@ export default function About() {
     <section id="about" className="py-20 bg-royal-surface/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
         <div className="text-center mb-14">
           <p className="font-body text-royal-brown font-semibold text-xs uppercase tracking-widest mb-3">Our Story</p>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-royal-mahogany mb-4">
@@ -72,7 +46,6 @@ export default function About() {
           <hr className="royal-divider w-20 mx-auto mt-2" />
         </div>
 
-        {/* Story + features */}
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <p className="font-body text-royal-navy/70 leading-relaxed mb-5 text-base">
@@ -116,15 +89,11 @@ export default function About() {
           </div>
         </div>
 
-        {/* Government Credentials — DB driven */}
+        {/* Government Credentials Block — DB driven */}
         <div className="bg-royal-navy rounded-2xl p-8 mb-16">
           <div className="text-center mb-8">
-            <p className="font-body text-royal-gold font-semibold text-xs uppercase tracking-widest mb-2">
-              Official Recognition
-            </p>
-            <h3 className="font-display text-2xl font-bold text-royal-bg">
-              Government Certified & Registered
-            </h3>
+            <p className="font-body text-royal-gold font-semibold text-xs uppercase tracking-widest mb-2">Official Recognition</p>
+            <h3 className="font-display text-2xl font-bold text-royal-bg">Government Certified & Registered</h3>
             <p className="font-body text-royal-bg/60 text-sm mt-2 max-w-lg mx-auto">
               Durva Woodcraft is formally registered with the Government of India — eligible for government
               tenders, bulk orders, and institutional supply.
@@ -146,7 +115,6 @@ export default function About() {
             ))}
           </div>
 
-          {/* Bulk order CTA */}
           <div className="mt-8 pt-6 border-t border-royal-bg/15 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <p className="font-display text-base font-bold text-royal-bg">Government & Bulk Orders Welcome</p>
