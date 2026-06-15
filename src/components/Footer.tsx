@@ -5,7 +5,6 @@ export default function Footer() {
   const { settings } = useSettings();
   if (!settings) return null;
 
-  // WhatsApp: prefer dedicated whatsapp_number, fall back to phone_numbers[0]
   const waNumber = (settings.whatsapp_number || settings.phone_numbers?.[0] || '').replace(/\D/g, '');
 
   const quickLinks = [
@@ -18,18 +17,18 @@ export default function Footer() {
   ];
 
   const govLinks = [
-    { label: 'IndiaHandmade Portal',    href: 'https://indiahandmade.com' },
-    { label: 'PM Vishwakarma Scheme',   href: 'https://pmvishwakarma.gov.in' },
-    { label: 'GeM (Govt Orders)',       href: 'https://gem.gov.in' },
-    { label: 'Udyam Registration',      href: 'https://udyamregistration.gov.in' },
+    { label: 'IndiaHandmade Portal',   href: 'https://indiahandmade.com' },
+    { label: 'PM Vishwakarma Scheme',  href: 'https://pmvishwakarma.gov.in' },
+    { label: 'GeM (Govt Orders)',      href: 'https://gem.gov.in' },
+    { label: 'Udyam Registration',     href: 'https://udyamregistration.gov.in' },
   ];
 
-  // Social links — only render if URL is set in admin
+  // Social icons from JSONB social_links — only render if URL is filled
   const socials = [
-    { icon: Facebook,  href: settings.facebook_url,  label: 'Facebook' },
-    { icon: Instagram, href: settings.instagram_url, label: 'Instagram' },
-    { icon: Youtube,   href: settings.youtube_url,   label: 'YouTube' },
-  ].filter(s => s.href);
+    { icon: Facebook,  href: settings.social_links?.facebook,  label: 'Facebook' },
+    { icon: Instagram, href: settings.social_links?.instagram, label: 'Instagram' },
+    { icon: Youtube,   href: settings.social_links?.youtube,   label: 'YouTube' },
+  ].filter(s => s.href && s.href.length > 0);
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -44,13 +43,13 @@ export default function Footer() {
             <p className="font-display text-lg font-bold text-royal-bg">Ready to furnish your space?</p>
             <p className="font-body text-royal-bg/80 text-sm">Custom orders welcome — handcrafted across Maharashtra, delivered across India.</p>
           </div>
-          <a
-            href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20a%20custom%20furniture%20order!`}
-            target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-royal-bg text-royal-mahogany font-semibold font-body text-sm whitespace-nowrap hover:bg-royal-cream transition-colors"
-          >
-            Get a Free Quote <ArrowRight size={14} />
-          </a>
+          {waNumber && (
+            <a href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20a%20custom%20furniture%20order!`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-royal-bg text-royal-mahogany font-semibold font-body text-sm whitespace-nowrap hover:bg-royal-cream transition-colors">
+              Get a Free Quote <ArrowRight size={14} />
+            </a>
+          )}
         </div>
       </div>
 
@@ -62,13 +61,13 @@ export default function Footer() {
             <h3 className="font-display text-2xl font-bold text-royal-bg mb-2">{settings.brand_name}</h3>
             <p className="font-body text-royal-bg/60 text-sm mb-5 leading-relaxed">{settings.tagline}</p>
 
-            {/* Govt credential lines — driven from DB */}
+            {/* Govt credentials — from DB, show only filled values */}
             <div className="space-y-2 mb-5">
               {settings.msme_number && (
                 <div className="flex items-start gap-2 text-xs font-body">
                   <Award size={13} className="text-royal-gold mt-0.5 flex-shrink-0" />
                   <span className="text-royal-bg/75">
-                    MSME / Udyam No: <strong className="text-royal-bg">{settings.msme_number}</strong>
+                    MSME / Udyam: <strong className="text-royal-bg font-semibold">{settings.msme_number}</strong>
                   </span>
                 </div>
               )}
@@ -76,15 +75,15 @@ export default function Footer() {
                 <div className="flex items-start gap-2 text-xs font-body">
                   <Shield size={13} className="text-royal-gold mt-0.5 flex-shrink-0" />
                   <span className="text-royal-bg/75">
-                    GSTIN: <strong className="text-royal-bg">{settings.gst_number}</strong>
+                    GSTIN: <strong className="text-royal-bg font-semibold">{settings.gst_number}</strong>
                   </span>
                 </div>
               )}
               {settings.gem_seller_id && (
                 <div className="flex items-start gap-2 text-xs font-body">
-                  <span className="text-royal-gold text-xs flex-shrink-0">🏛</span>
+                  <span className="text-royal-gold flex-shrink-0">🏛</span>
                   <span className="text-royal-bg/75">
-                    GeM Seller: <strong className="text-royal-bg">{settings.gem_seller_id}</strong>
+                    GeM: <strong className="text-royal-bg font-semibold">{settings.gem_seller_id}</strong>
                   </span>
                 </div>
               )}
@@ -99,7 +98,6 @@ export default function Footer() {
               <span className="badge-handmade">🪵 Make in India</span>
             </div>
 
-            {/* Social icons — only if URLs configured */}
             {socials.length > 0 && (
               <div className="flex gap-3">
                 {socials.map(({ icon: Icon, href, label }) => (
@@ -125,7 +123,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-
             <h4 className="font-display text-base font-bold text-royal-bg mb-4">Government Portals</h4>
             <ul className="space-y-3">
               {govLinks.map(({ label, href }) => (
@@ -164,7 +161,6 @@ export default function Footer() {
                 </a>
               )}
             </div>
-
             {waNumber && (
               <a href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft!`}
                 target="_blank" rel="noopener noreferrer"
@@ -204,7 +200,7 @@ export default function Footer() {
 
         <div className="border-t border-royal-bg/15 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-body text-royal-bg/40">
           <p>© {new Date().getFullYear()} {settings.brand_name}. All rights reserved.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3">
             <span>Handcrafted in Maharashtra 🪵</span>
             <span>·</span>
             <span>Pan-India Delivery</span>
