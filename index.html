@@ -1,41 +1,129 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Primary SEO -->
-  <title>Durva Woodcraft — Handmade Wooden Furniture Across India</title>
-  <meta name="description" content="Premium handcrafted wooden furniture and custom carpentry by Durva Woodcraft. Dining tables, sofas, beds, office furniture — handmade in Maharashtra, delivered pan-India." />
-  <meta name="keywords" content="handmade wooden furniture India, custom carpentry Maharashtra, wooden dining table, handcrafted sofa, wooden bed, Durva Woodcraft, artisan furniture" />
+  <title>Durva Woodcraft — Handmade Wooden Furniture | Maharashtra, India</title>
+  <meta name="description" content="Premium handcrafted wooden furniture by Durva Woodcraft, Maharashtra. Custom dining tables, sofas, beds, wardrobes — MSME certified (MH-01-0084519), delivered pan-India. 25+ years of craftsmanship." />
+  <meta name="keywords" content="handmade wooden furniture India, custom carpentry Maharashtra, wooden dining table, handcrafted sofa, wooden bed, custom furniture Maharashtra, MSME furniture, Durva Woodcraft, Sheesham furniture, Teak furniture, artisan furniture" />
   <meta name="author" content="Durva Woodcraft" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <meta name="theme-color" content="#4A1C0A" />
 
-  <!-- Open Graph / Facebook -->
+  <!-- Geo / Local SEO -->
+  <meta name="geo.region" content="IN-MH" />
+  <meta name="geo.placename" content="Nashik, Maharashtra, India" />
+  <meta name="coverage" content="India" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://durvawoodcraft.in/" />
+
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://durvawoodcraft.in/" />
-  <meta property="og:title" content="Durva Woodcraft — Handmade Wooden Furniture Across India" />
-  <meta property="og:description" content="Premium handcrafted wooden furniture. Made in Maharashtra, delivered across India." />
-  <meta property="og:image" content="/images/logo.png" />
+  <meta property="og:site_name" content="Durva Woodcraft" />
+  <meta property="og:title" content="Durva Woodcraft — Handmade Wooden Furniture | Maharashtra" />
+  <meta property="og:description" content="Premium handcrafted wooden furniture. MSME certified (MH-01-0084519). Custom orders welcome. Delivered across India." />
+  <meta property="og:image" content="https://durvawoodcraft.in/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_IN" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Durva Woodcraft — Handmade Wooden Furniture" />
-  <meta name="twitter:description" content="Premium handcrafted wooden furniture. Made in Maharashtra, delivered across India." />
-  <meta name="twitter:image" content="/images/logo.png" />
+  <meta name="twitter:description" content="Premium handcrafted wooden furniture from Maharashtra. MSME certified. Custom orders. Pan-India delivery." />
+  <meta name="twitter:image" content="https://durvawoodcraft.in/og-image.jpg" />
 
-  <!-- Theme color for mobile browser -->
-  <meta name="theme-color" content="#4A1C0A" />
+  <!-- Font preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <!-- Canonical -->
-  <link rel="canonical" href="https://durvawoodcraft.in/" />
+  <!-- JSON-LD Structured Data
+       NOTE: This is a static SPA — index.html cannot be dynamic.
+       Phone/email are hardcoded here once. Update when they change.
+       All other data (products, settings) is served dynamically by React + Supabase.
+  -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://durvawoodcraft.in/#business",
+        "name": "Durva Woodcraft",
+        "description": "Premium handcrafted wooden furniture and custom carpentry. MSME certified (MH-01-0084519) artisan workshop in Maharashtra delivering across India.",
+        "url": "https://durvawoodcraft.in",
+        "telephone": "+91-XXXXXXXXXX",
+        "email": "contact@durvawoodcraft.in",
+        "foundingDate": "2000",
+        "slogan": "Honoring Nature, Crafting Life",
+        "identifier": {
+          "@type": "PropertyValue",
+          "name": "MSME Udyam Number",
+          "value": "MH-01-0084519"
+        },
+        "priceRange": "\u20b9\u20b9-\u20b9\u20b9\u20b9",
+        "currenciesAccepted": "INR",
+        "paymentAccepted": "Cash, UPI, PhonePe, Google Pay, Paytm",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Nashik",
+          "addressRegion": "Maharashtra",
+          "addressCountry": "IN",
+          "postalCode": "422001"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "19.9975",
+          "longitude": "73.7898"
+        },
+        "areaServed": { "@type": "Country", "name": "India" },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+            "opens": "09:00",
+            "closes": "18:00"
+          }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Handcrafted Wooden Furniture",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Custom Dining Table" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Wooden Sofa Frame" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Handcrafted Bed Frame" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Wooden Wardrobe" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Custom Office Desk" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Pooja Mandir" } }
+          ]
+        },
+        "image": ["https://durvawoodcraft.in/og-image.jpg"],
+        "sameAs": [
+          "https://www.instagram.com/durvawoodcraft",
+          "https://www.facebook.com/durvawoodcraft"
+        ],
+        "award": "MSME Registered — Udyam No. MH-01-0084519",
+        "knowsAbout": ["Woodworking","Carpentry","Custom Furniture","Sheesham Wood","Teak Wood","Mango Wood"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://durvawoodcraft.in/#website",
+        "url": "https://durvawoodcraft.in",
+        "name": "Durva Woodcraft",
+        "description": "Handmade wooden furniture from Maharashtra",
+        "publisher": { "@id": "https://durvawoodcraft.in/#business" }
+      }
+    ]
+  }
+  </script>
 </head>
-
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
-
 </html>
