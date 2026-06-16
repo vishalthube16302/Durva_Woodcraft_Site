@@ -243,3 +243,38 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ── Policy page content styles ─────────────────────── */
+.policy-content h2 {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4A1C0A;
+  margin: 2rem 0 0.75rem;
+}
+.policy-content h3 {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #4A1C0A;
+  margin: 1.5rem 0 0.5rem;
+}
+.policy-content p {
+  margin-bottom: 1rem;
+  color: rgba(27,45,79,0.75);
+  line-height: 1.8;
+}
+.policy-content ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.policy-content li {
+  margin-bottom: 0.4rem;
+  color: rgba(27,45,79,0.75);
+  line-height: 1.7;
+}
+.policy-content strong {
+  color: #4A1C0A;
+  font-weight: 600;
+}

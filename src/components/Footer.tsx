@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Youtube, Phone, Mail, MapPin, ArrowRight, Award, Shield, ExternalLink } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Phone, Mail, MapPin, ArrowRight, Award, Shield, ExternalLink, Image } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 
 export default function Footer() {
@@ -8,22 +8,28 @@ export default function Footer() {
   const waNumber = (settings.whatsapp_number || settings.phone_numbers?.[0] || '').replace(/\D/g, '');
 
   const quickLinks = [
-    { label: 'Home',         id: 'home' },
-    { label: 'Products',     id: 'products' },
-    { label: 'Custom Order', id: 'custom-order' },
-    { label: 'About Us',     id: 'about' },
-    { label: 'Bulk Orders',  id: 'corporate' },
-    { label: 'Contact',      id: 'contact' },
+    { label: 'Home',         id: 'home',      href: null },
+    { label: 'Products',     id: 'products',  href: null },
+    { label: 'Custom Order', id: 'custom-order', href: null },
+    { label: 'About Us',     id: 'about',     href: null },
+    { label: 'Bulk Orders',  id: 'corporate', href: null },
+    { label: 'Portfolio',    id: null,        href: '/gallery' },
+    { label: 'Contact',      id: 'contact',   href: null },
+  ];
+
+  const policyLinks = [
+    { label: 'Shipping Policy',  href: '/policy/shipping' },
+    { label: 'Return Policy',    href: '/policy/returns' },
+    { label: 'Warranty Policy',  href: '/policy/warranty' },
   ];
 
   const govLinks = [
-    { label: 'IndiaHandmade Portal',   href: 'https://indiahandmade.com' },
-    { label: 'PM Vishwakarma Scheme',  href: 'https://pmvishwakarma.gov.in' },
-    { label: 'GeM (Govt Orders)',      href: 'https://gem.gov.in' },
-    { label: 'Udyam Registration',     href: 'https://udyamregistration.gov.in' },
+    { label: 'IndiaHandmade Portal',  href: 'https://indiahandmade.com' },
+    { label: 'PM Vishwakarma Scheme', href: 'https://pmvishwakarma.gov.in' },
+    { label: 'GeM (Govt Orders)',     href: 'https://gem.gov.in' },
+    { label: 'Udyam Registration',    href: 'https://udyamregistration.gov.in' },
   ];
 
-  // Social icons from JSONB social_links — only render if URL is filled
   const socials = [
     { icon: Facebook,  href: settings.social_links?.facebook,  label: 'Facebook' },
     { icon: Instagram, href: settings.social_links?.instagram, label: 'Instagram' },
@@ -41,7 +47,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="font-display text-lg font-bold text-royal-bg">Ready to furnish your space?</p>
-            <p className="font-body text-royal-bg/80 text-sm">Custom orders welcome — handcrafted across Maharashtra, delivered across India.</p>
+            <p className="font-body text-royal-bg/80 text-sm">Custom orders welcome — handcrafted in Maharashtra, delivered across India.</p>
           </div>
           {waNumber && (
             <a href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20a%20custom%20furniture%20order!`}
@@ -61,7 +67,6 @@ export default function Footer() {
             <h3 className="font-display text-2xl font-bold text-royal-bg mb-2">{settings.brand_name}</h3>
             <p className="font-body text-royal-bg/60 text-sm mb-5 leading-relaxed">{settings.tagline}</p>
 
-            {/* Govt credentials — from DB, show only filled values */}
             <div className="space-y-2 mb-5">
               {settings.msme_number && (
                 <div className="flex items-start gap-2 text-xs font-body">
@@ -110,21 +115,41 @@ export default function Footer() {
             )}
           </div>
 
-          {/* Quick + Govt links */}
+          {/* Quick Links + Policy + Govt */}
           <div>
             <h4 className="font-display text-base font-bold text-royal-bg mb-5">Quick Links</h4>
-            <ul className="space-y-3 mb-7">
-              {quickLinks.map(({ label, id }) => (
-                <li key={id}>
-                  <button onClick={() => scrollTo(id)}
-                    className="font-body text-sm text-royal-bg/60 hover:text-royal-gold transition-colors flex items-center gap-1.5">
-                    <ArrowRight size={12} />{label}
-                  </button>
+            <ul className="space-y-2.5 mb-6">
+              {quickLinks.map(({ label, id, href }) => (
+                <li key={label}>
+                  {href ? (
+                    <a href={href}
+                      className="font-body text-sm text-royal-bg/60 hover:text-royal-gold transition-colors flex items-center gap-1.5">
+                      <ArrowRight size={12} />{label}
+                    </a>
+                  ) : (
+                    <button onClick={() => id && scrollTo(id)}
+                      className="font-body text-sm text-royal-bg/60 hover:text-royal-gold transition-colors flex items-center gap-1.5">
+                      <ArrowRight size={12} />{label}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
-            <h4 className="font-display text-base font-bold text-royal-bg mb-4">Government Portals</h4>
-            <ul className="space-y-3">
+
+            <h4 className="font-display text-sm font-bold text-royal-bg mb-3">Policies</h4>
+            <ul className="space-y-2 mb-6">
+              {policyLinks.map(({ label, href }) => (
+                <li key={label}>
+                  <a href={href}
+                    className="font-body text-sm text-royal-bg/60 hover:text-royal-gold transition-colors flex items-center gap-1.5">
+                    <ExternalLink size={11} />{label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <h4 className="font-display text-sm font-bold text-royal-bg mb-3">Government Portals</h4>
+            <ul className="space-y-2">
               {govLinks.map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} target="_blank" rel="noopener noreferrer"
@@ -136,7 +161,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact — all from DB */}
+          {/* Contact */}
           <div>
             <h4 className="font-display text-base font-bold text-royal-bg mb-5">Contact Us</h4>
             <div className="space-y-4 font-body text-sm text-royal-bg/60">
@@ -173,6 +198,12 @@ export default function Footer() {
                 WhatsApp Us
               </a>
             )}
+
+            {/* Portfolio link */}
+            <a href="/gallery"
+              className="mt-3 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold font-body text-royal-bg/70 border border-royal-bg/20 hover:bg-royal-bg/10 transition-colors">
+              <Image size={14} /> View Our Portfolio
+            </a>
           </div>
 
           {/* Hours + Payment */}
@@ -185,7 +216,7 @@ export default function Footer() {
             </div>
             <h4 className="font-display text-sm font-bold text-royal-bg mb-3">We Accept</h4>
             <div className="flex flex-wrap gap-2 mb-6">
-              {['UPI', 'PhonePe', 'GPay', 'Paytm', 'COD'].map(m => (
+              {['UPI', 'PhonePe', 'GPay', 'Paytm', 'BHIM', 'COD'].map(m => (
                 <span key={m} className="text-xs font-body px-2.5 py-1 rounded bg-royal-bg/10 text-royal-bg/80 border border-royal-bg/20">{m}</span>
               ))}
             </div>
