@@ -3,7 +3,6 @@ import Hero from '../components/Hero';
 import Products from '../components/Products';
 import CustomOrder from '../components/CustomOrder';
 import About from '../components/About';
-import Corporate from '../components/Corporate';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import WhatsAppFloat from '../components/WhatsAppFloat';
@@ -17,7 +16,6 @@ export default function Website() {
         <Products />
         <CustomOrder />
         <About />
-        <Corporate />
         <Contact />
       </main>
       <Footer />
