@@ -10,21 +10,21 @@ export default function About() {
   const features = [
     { icon: Hammer, title: 'Master Craftsmanship',
       description: 'Every joint, curve, and finish is done by hand by skilled artisans with decades of experience.' },
-    { icon: Leaf,   title: 'Sustainable Wood',
+    { icon: Leaf, title: 'Sustainable Wood',
       description: 'We use premium, responsibly sourced Sheesham, Teak, and Mango wood for lasting quality.' },
-    { icon: Heart,  title: 'Made with Soul',
+    { icon: Heart, title: 'Made with Soul',
       description: "Each piece carries the warmth of human hands — no machine can replicate the character of true handcraft." },
-    { icon: Users,  title: 'Family Legacy',
+    { icon: Users, title: 'Family Legacy',
       description: "Rooted in Maharashtra's rich woodworking tradition, we bring generations of craft knowledge to every order." },
   ];
 
-  // Credential cards — only show rows with filled DB values
+  // Build credential cards from DB — only show what's filled
   const credentials = [
-    settings.msme_number  && { icon: Award,       label: 'MSME / Udyam Registered', value: settings.msme_number,  sub: 'Udyam Certificate Holder' },
-    settings.gst_number   && { icon: Shield,      label: 'GST Registered',           value: settings.gst_number,   sub: 'Pan-India B2B & B2C Invoicing' },
-                              { icon: Star,        label: 'PM Vishwakarma Certified', value: null,                  sub: 'Ministry of MSME, Govt of India' },
-    settings.gem_seller_id && { icon: TrendingUp, label: 'GeM Portal Listed',        value: settings.gem_seller_id, sub: 'Government e-Marketplace' },
-    !settings.gem_seller_id && { icon: TrendingUp, label: 'IndiaHandmade Listed',    value: null,                  sub: 'Digital India Corporation Portal' },
+    settings.msme_number  && { icon: Award,      label: 'MSME / Udyam',         value: settings.msme_number,   sub: 'Udyam Certificate Holder' },
+    settings.gst_number   && { icon: Shield,     label: 'GST Registered',        value: settings.gst_number,    sub: 'Pan-India B2B Invoicing' },
+                              { icon: Star,       label: 'PM Vishwakarma',        value: null,                   sub: 'Ministry of MSME, Govt of India' },
+    settings.gem_seller_id && { icon: TrendingUp, label: 'GeM Portal Listed',    value: settings.gem_seller_id, sub: 'Govt e-Marketplace' },
+    !settings.gem_seller_id && { icon: TrendingUp, label: 'IndiaHandmade Listed', value: null,                  sub: 'Digital India Corporation' },
   ].filter(Boolean) as { icon: any; label: string; value: string | null; sub: string }[];
 
   const woodTypes = [
@@ -38,6 +38,7 @@ export default function About() {
     <section id="about" className="py-20 bg-royal-surface/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+        {/* Header */}
         <div className="text-center mb-14">
           <p className="font-body text-royal-brown font-semibold text-xs uppercase tracking-widest mb-3">Our Story</p>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-royal-mahogany mb-4">
@@ -46,6 +47,7 @@ export default function About() {
           <hr className="royal-divider w-20 mx-auto mt-2" />
         </div>
 
+        {/* Story + features */}
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <p className="font-body text-royal-navy/70 leading-relaxed mb-5 text-base">
@@ -89,7 +91,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Government Credentials Block — DB driven */}
+        {/* Govt Credentials — DB driven */}
         <div className="bg-royal-navy rounded-2xl p-8 mb-16">
           <div className="text-center mb-8">
             <p className="font-body text-royal-gold font-semibold text-xs uppercase tracking-widest mb-2">Official Recognition</p>
@@ -107,9 +109,7 @@ export default function About() {
                   <Icon size={18} className="text-royal-gold" />
                 </div>
                 <p className="font-body text-sm font-semibold text-royal-bg">{label}</p>
-                {value && (
-                  <p className="font-body text-xs text-royal-gold font-bold mt-1 tracking-wide">{value}</p>
-                )}
+                {value && <p className="font-body text-xs text-royal-gold font-bold mt-1 tracking-wide">{value}</p>}
                 <p className="font-body text-xs text-royal-bg/50 mt-1">{sub}</p>
               </div>
             ))}
@@ -120,15 +120,13 @@ export default function About() {
               <p className="font-display text-base font-bold text-royal-bg">Government & Bulk Orders Welcome</p>
               <p className="font-body text-sm text-royal-bg/60">
                 GST invoicing · MSME rates · Institutional supply capability
-                {settings.msme_number && ` · MSME: ${settings.msme_number}`}
+                {settings.msme_number && ` · ${settings.msme_number}`}
               </p>
             </div>
             {waNumber && (
-              <a
-                href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20a%20bulk%2Fgovernment%20order.`}
+              <a href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27m%20interested%20in%20a%20bulk%2Fgovernment%20order.`}
                 target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 rounded-full bg-royal-gold text-royal-mahogany font-semibold font-body text-sm whitespace-nowrap hover:bg-amber-400 transition-colors"
-              >
+                className="flex items-center gap-2 px-6 py-3 rounded-full bg-royal-gold text-royal-mahogany font-semibold font-body text-sm whitespace-nowrap hover:bg-amber-400 transition-colors">
                 Enquire for Bulk Order →
               </a>
             )}
