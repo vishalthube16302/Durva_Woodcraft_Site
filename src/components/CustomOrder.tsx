@@ -1,186 +1,247 @@
 import { useState } from 'react';
-import { Ruler, Palette, Trees, Send, CheckCircle, MessageCircle } from 'lucide-react';
-import { useSettings } from '../hooks/useSettings';
+import { Send, CheckCircle, Ruler, Hammer, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useSettings } from '../hooks/useSettings';
 
-const WOOD_TYPES = ['Sheesham (Rosewood)', 'Teak', 'Mango Wood', 'Sal Wood', 'Pine', 'Other (mention in notes)'];
-const FINISHES   = ['Natural Polish', 'Walnut Stain', 'Mahogany Stain', 'Painted (White)', 'Lacquer Finish', 'Oil Finish'];
-const FURNITURE  = ['Dining Table', 'Sofa / Sofa-cum-Bed', 'Bed Frame', 'Wardrobe', 'TV Unit', 'Study Table', 'Office Desk', 'Chair', 'Bookshelf', 'Pooja Mandir', 'Other'];
+const FURNITURE_TYPES = ['Dining Table', 'Dining Chair', 'Sofa Frame', 'Bed Frame', 'Wardrobe', 'Office Desk', 'Bookshelf', 'TV Unit', 'Pooja Mandir', 'Coffee Table', 'Other'];
+const WOOD_TYPES      = ['Sheesham (Rosewood)', 'Teak (Sagwan)', 'Mango Wood', 'Sal Wood', 'Not sure — suggest me'];
+const FINISH_TYPES    = ['Natural Polish', 'Matte Finish', 'Glossy Finish', 'Walnut Stain', 'Mahogany Stain', 'White Paint', 'Custom Color'];
+const BUDGET_RANGES   = ['Under ₹10,000', '₹10,000–₹25,000', '₹25,000–₹50,000', '₹50,000–₹1,00,000', 'Above ₹1,00,000', 'Flexible'];
 
 export default function CustomOrder() {
   const { settings } = useSettings();
   const [form, setForm] = useState({
     name: '', phone: '', email: '',
     furniture_type: '', wood_type: '', finish: '',
-    dimensions: '', notes: '',
+    dimensions: '', budget_range: '', notes: '',
   });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [submitting, setSub] = useState(false);
+  const [submitted, setSub2] = useState(false);
+  const [error, setError]   = useState('');
 
   if (!settings) return null;
 
-  const waNumber = settings.phone_numbers?.[0]?.replace(/\D/g, '') || '';
+  const waNumber = (settings.whatsapp_number || settings.phone_numbers?.[0] || '').replace(/\D/g, '');
 
-  const change = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm(p => ({ ...p, [e.target.name]: e.target.value }));
-  };
+  const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('sending');
+    setSub(true);
+    setError('');
     try {
-      const { error } = await supabase.from('custom_orders').insert([{
-        ...form,
-        created_at: new Date().toISOString(),
-      }]);
-      if (error) throw error;
-      setStatus('success');
+      // 1. Save to custom_orders table
+      const { error: dbErr } = await supabase.from('custom_orders').insert({
+        name:           form.name,
+        phone:          form.phone,
+        email:          form.email || null,
+        furniture_type: form.furniture_type,
+        wood_type:      form.wood_type,
+        finish:         form.finish,
+        dimensions:     form.dimensions,
+        budget_range:   form.budget_range,
+        notes:          form.notes,
+      });
+      if (dbErr) throw dbErr;
 
-      // Also open WhatsApp with prefilled message
-      const msg = encodeURIComponent(
-        `Hello Durva Woodcraft! I'd like a custom ${form.furniture_type} in ${form.wood_type} wood with ${form.finish} finish. Dimensions: ${form.dimensions}. Name: ${form.name}, Phone: ${form.phone}.`
-      );
-      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-    } catch {
-      setStatus('error');
+      setSub2(true);
+
+      // 2. Also open WhatsApp with pre-filled summary
+      if (waNumber) {
+        const msg = encodeURIComponent(
+          `Hello Durva Woodcraft! I've submitted a Custom Order Request:\n\n` +
+          `• Name: ${form.name}\n` +
+          `• Furniture: ${form.furniture_type}\n` +
+          `• Wood: ${form.wood_type}\n` +
+          `• Finish: ${form.finish}\n` +
+          `• Dimensions: ${form.dimensions || 'Flexible'}\n` +
+          `• Budget: ${form.budget_range}\n` +
+          `• Notes: ${form.notes || 'None'}\n\n` +
+          `Please confirm and share a quote. Thank you!`
+        );
+        window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+      }
+
+      setForm({ name: '', phone: '', email: '', furniture_type: '', wood_type: '', finish: '', dimensions: '', budget_range: '', notes: '' });
+    } catch (err: any) {
+      setError('Submission failed. Please send us a WhatsApp message directly.');
+      console.error(err);
+    } finally {
+      setSub(false);
     }
   };
 
-  const steps = [
-    { icon: MessageCircle, title: 'Share Your Idea',     desc: 'Tell us what you need — furniture type, size, wood, finish.' },
-    { icon: Ruler,         title: 'We Design for You',  desc: 'Our craftsmen will suggest the best design and give a quote.' },
-    { icon: Trees,         title: 'We Craft It',         desc: 'Your furniture is handmade with premium wood in our workshop.' },
-    { icon: Palette,       title: 'Delivered to You',   desc: 'Carefully packed and delivered to your doorstep across India.' },
-  ];
+  const selectCls = 'w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-bg font-body text-sm text-royal-mahogany focus:outline-none focus:border-royal-brown focus:ring-2 focus:ring-royal-brown/15 transition-all appearance-none cursor-pointer';
+  const inputCls  = 'w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-bg font-body text-sm text-royal-mahogany placeholder-royal-navy/30 focus:outline-none focus:border-royal-brown focus:ring-2 focus:ring-royal-brown/15 transition-all';
+  const labelCls  = 'block font-body text-xs font-semibold text-royal-navy uppercase tracking-widest mb-1.5';
 
   return (
     <section id="custom-order" className="py-20 bg-royal-bg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Heading */}
-        <div className="text-center mb-14">
-          <p className="font-body text-royal-brown font-semibold text-sm uppercase tracking-widest mb-3">
-            Bespoke Furniture
-          </p>
-          <h2 className="section-heading font-display text-4xl font-bold text-royal-mahogany mb-6">
-            Custom Order
+        {/* Header */}
+        <div className="text-center mb-12">
+          <p className="font-body text-royal-brown font-semibold text-xs uppercase tracking-widest mb-3">Made Just for You</p>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-royal-mahogany mb-4">
+            Request a Custom Order
           </h2>
-          <hr className="royal-divider w-24 mt-10 mb-4" />
-          <p className="font-body text-royal-navy/70 max-w-xl mx-auto">
-            Have a specific design in mind? We build furniture to your exact size, wood type, and finish — completely custom, completely handmade.
+          <p className="font-body text-royal-navy/60 max-w-xl mx-auto">
+            Tell us what you need — we'll craft it exactly to your specifications.
+            We'll contact you with a quote within 24 hours.
           </p>
+          <hr className="royal-divider w-20 mx-auto mt-6" />
         </div>
 
-        {/* Process steps */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-14">
-          {steps.map(({ icon: Icon, title, desc }, i) => (
-            <div key={i} className="text-center p-5 rounded-2xl bg-royal-surface border border-royal-border">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-royal-brown flex items-center justify-center text-white">
-                <Icon size={22} />
-              </div>
-              <p className="font-body text-xs text-royal-brown font-semibold mb-1">Step {i + 1}</p>
-              <h4 className="font-display text-sm font-bold text-royal-mahogany mb-1">{title}</h4>
-              <p className="font-body text-xs text-royal-navy/60 leading-relaxed">{desc}</p>
+        {submitted ? (
+          <div className="text-center py-16 bg-royal-surface/50 rounded-2xl border border-royal-border">
+            <div className="w-20 h-20 rounded-full bg-green-50 border border-green-200 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle size={40} className="text-green-500" />
             </div>
-          ))}
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-10">
-
-          {/* Form */}
-          <div className="bg-royal-surface rounded-2xl p-8 shadow-royal-sm border border-royal-border">
-            <h3 className="font-display text-2xl font-bold text-royal-mahogany mb-6">
-              Tell Us What You Need
-            </h3>
-
-            {status === 'success' ? (
-              <div className="flex flex-col items-center justify-center h-56 gap-4 text-center">
-                <CheckCircle size={52} className="text-green-500" />
-                <p className="font-display text-xl font-bold text-royal-mahogany">Order Request Received!</p>
-                <p className="font-body text-royal-navy/70 text-sm">
-                  We've opened WhatsApp for you. If it didn't open, call us directly.
-                </p>
-                <button onClick={() => setStatus('idle')} className="text-sm text-royal-brown underline">Submit another</button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <input name="name" value={form.name} onChange={change} placeholder="Your Name *" required
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown col-span-2 sm:col-span-1" />
-                  <input name="phone" value={form.phone} onChange={change} placeholder="Phone Number *" required type="tel"
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown col-span-2 sm:col-span-1" />
-                </div>
-                <input name="email" value={form.email} onChange={change} placeholder="Email (optional)" type="email"
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown" />
-                <select name="furniture_type" value={form.furniture_type} onChange={change} required
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-brown">
-                  <option value="">Select Furniture Type *</option>
-                  {FURNITURE.map(f => <option key={f} value={f}>{f}</option>)}
-                </select>
-                <div className="grid grid-cols-2 gap-4">
-                  <select name="wood_type" value={form.wood_type} onChange={change}
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-brown">
-                    <option value="">Wood Type</option>
-                    {WOOD_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
-                  </select>
-                  <select name="finish" value={form.finish} onChange={change}
-                    className="px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany focus:outline-none focus:border-royal-brown">
-                    <option value="">Finish Type</option>
-                    {FINISHES.map(f => <option key={f} value={f}>{f}</option>)}
-                  </select>
-                </div>
-                <input name="dimensions" value={form.dimensions} onChange={change} placeholder="Dimensions (e.g. 6ft x 3ft x 2.5ft)"
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown" />
-                <textarea name="notes" value={form.notes} onChange={change} rows={3} placeholder="Any special requirements, reference images, or notes..."
-                  className="w-full px-4 py-3 rounded-xl border border-royal-border bg-royal-cream font-body text-royal-mahogany placeholder-royal-navy/40 focus:outline-none focus:border-royal-brown resize-none" />
-
-                {status === 'error' && <p className="text-red-500 text-sm font-body">Something went wrong. Please WhatsApp us directly.</p>}
-
-                <button type="submit" disabled={status === 'sending'}
-                  className="w-full royal-btn-primary flex items-center justify-center gap-2 disabled:opacity-60">
-                  {status === 'sending' ? 'Submitting...' : (<><Send size={16} /> Submit & Open WhatsApp</>)}
-                </button>
-              </form>
-            )}
+            <h3 className="font-display text-2xl font-bold text-royal-mahogany mb-3">Order Request Submitted!</h3>
+            <p className="font-body text-royal-navy/60 mb-2 max-w-md mx-auto">
+              Your custom order details have been saved. We've also opened WhatsApp with a summary — confirm there for fastest response.
+            </p>
+            <p className="font-body text-sm text-royal-brown font-semibold mb-8">
+              Expected quote: within 24 hours
+            </p>
+            <button onClick={() => setSub2(false)}
+              className="font-body text-sm text-royal-navy/50 hover:text-royal-navy/80 transition-colors underline">
+              Submit another request
+            </button>
           </div>
+        ) : (
+          <div className="bg-royal-bg rounded-2xl border border-royal-border shadow-royal-md overflow-hidden">
 
-          {/* Why custom order */}
-          <div className="space-y-6">
-            <div className="bg-royal-navy rounded-2xl p-7">
-              <h4 className="font-display text-xl font-bold text-royal-bg mb-4">Why Custom Order?</h4>
-              <ul className="space-y-3 font-body text-sm text-royal-bg/75">
+            {/* Step indicators */}
+            <div className="bg-royal-surface/40 px-8 py-4 border-b border-royal-border">
+              <div className="flex items-center gap-6 text-xs font-body font-semibold text-royal-navy/50">
                 {[
-                  'Perfect fit for your room dimensions',
-                  'Choose your own wood type and finish',
-                  'Unique design — no one else has the same piece',
-                  'Same price as ready-made, better quality',
-                  'Pan-India delivery with safe packaging',
-                  'MSME certified — eligible for institutional orders',
-                ].map(point => (
-                  <li key={point} className="flex items-start gap-2">
-                    <span className="text-royal-gold mt-0.5">✦</span>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-royal-surface rounded-2xl p-7 border border-royal-border">
-              <h4 className="font-display text-lg font-bold text-royal-mahogany mb-3">Delivery Timeline</h4>
-              <div className="space-y-3">
-                {[
-                  { label: 'Standard Items',  time: '5–7 business days' },
-                  { label: 'Custom Orders',   time: '14–21 business days' },
-                  { label: 'Bulk / Govt Orders', time: 'As per agreement' },
-                ].map(({ label, time }) => (
-                  <div key={label} className="flex justify-between items-center border-b border-royal-border pb-2 last:border-0 last:pb-0">
-                    <span className="font-body text-sm text-royal-navy/70">{label}</span>
-                    <span className="font-body text-sm font-semibold text-royal-brown">{time}</span>
+                  { icon: Hammer, label: 'Furniture Details' },
+                  { icon: Ruler, label: 'Dimensions & Budget' },
+                  { icon: MessageCircle, label: 'Contact & Submit' },
+                ].map(({ icon: Icon, label }, i) => (
+                  <div key={label} className="flex items-center gap-1.5 text-royal-brown">
+                    <Icon size={13} />
+                    <span>{label}</span>
+                    {i < 2 && <span className="ml-4 text-royal-border">—</span>}
                   </div>
                 ))}
               </div>
             </div>
+
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+
+              {/* Section 1: Furniture specs */}
+              <div>
+                <h3 className="font-display text-lg font-bold text-royal-mahogany mb-4">Furniture Details</h3>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className={labelCls}>Furniture Type *</label>
+                    <select className={selectCls} required value={form.furniture_type} onChange={e => set('furniture_type', e.target.value)}>
+                      <option value="">Select type...</option>
+                      {FURNITURE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Wood Preference *</label>
+                    <select className={selectCls} required value={form.wood_type} onChange={e => set('wood_type', e.target.value)}>
+                      <option value="">Select wood...</option>
+                      {WOOD_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Finish Type *</label>
+                    <select className={selectCls} required value={form.finish} onChange={e => set('finish', e.target.value)}>
+                      <option value="">Select finish...</option>
+                      {FINISH_TYPES.map(f => <option key={f} value={f}>{f}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Dimensions & budget */}
+              <div className="pt-4 border-t border-royal-border">
+                <h3 className="font-display text-lg font-bold text-royal-mahogany mb-4">Dimensions & Budget</h3>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelCls}>Dimensions (L × W × H)</label>
+                    <input className={inputCls} type="text"
+                      value={form.dimensions} onChange={e => set('dimensions', e.target.value)}
+                      placeholder="e.g. 6ft × 3ft × 30in — or leave blank if flexible" />
+                    <p className="font-body text-xs text-royal-navy/40 mt-1">Leave blank if you want us to suggest standard sizes</p>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Budget Range *</label>
+                    <select className={selectCls} required value={form.budget_range} onChange={e => set('budget_range', e.target.value)}>
+                      <option value="">Select budget...</option>
+                      {BUDGET_RANGES.map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className={labelCls}>Additional Notes</label>
+                  <textarea className={inputCls + ' resize-none'} rows={3}
+                    value={form.notes} onChange={e => set('notes', e.target.value)}
+                    placeholder="Any special requirements, reference images, colour preferences, delivery location..." />
+                </div>
+              </div>
+
+              {/* Section 3: Contact info */}
+              <div className="pt-4 border-t border-royal-border">
+                <h3 className="font-display text-lg font-bold text-royal-mahogany mb-4">Your Contact Details</h3>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className={labelCls}>Full Name *</label>
+                    <input className={inputCls} type="text" required
+                      value={form.name} onChange={e => set('name', e.target.value)}
+                      placeholder="Rahul Sharma" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Phone Number *</label>
+                    <input className={inputCls} type="tel" required
+                      value={form.phone} onChange={e => set('phone', e.target.value)}
+                      placeholder="9823XXXXXX" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Email (optional)</label>
+                    <input className={inputCls} type="email"
+                      value={form.email} onChange={e => set('email', e.target.value)}
+                      placeholder="rahul@example.com" />
+                  </div>
+                </div>
+              </div>
+
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 font-body text-sm text-red-700">{error}</div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <button type="submit" disabled={submitting}
+                  className="flex-1 royal-btn-primary py-4 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-base">
+                  {submitting
+                    ? <div className="w-5 h-5 border-2 border-royal-bg/30 border-t-royal-bg rounded-full animate-spin" />
+                    : <Send size={18} />}
+                  {submitting ? 'Submitting...' : 'Submit Custom Order Request'}
+                </button>
+                {waNumber && (
+                  <a href={`https://wa.me/${waNumber}?text=Hello%20Durva%20Woodcraft%2C%20I%27d%20like%20to%20place%20a%20custom%20order!`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-4 rounded-full border-2 font-body font-semibold text-sm transition-all hover:text-white"
+                    style={{ borderColor: '#25D366', color: '#25D366' }}
+                    onMouseOver={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#25D366'; }}
+                    onMouseOut={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; }}>
+                    <MessageCircle size={18} />
+                    Chat on WhatsApp
+                  </a>
+                )}
+              </div>
+
+              <p className="font-body text-xs text-royal-navy/40 text-center">
+                Submitting this form also opens WhatsApp with your order summary for instant confirmation.
+              </p>
+            </form>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
