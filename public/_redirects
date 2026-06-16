@@ -1,0 +1,6 @@
+# Cloudflare Pages — SPA routing
+# All routes serve index.html (React Router handles client-side routing)
+/*    /index.html   200
+
+# Security: 404 on direct /admin hits (old URL)
+# Note: React Router already catches /admin -> NotFound
