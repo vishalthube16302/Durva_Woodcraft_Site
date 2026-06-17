@@ -124,6 +124,10 @@ export default function Corporate() {
             </p>
           )}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/government-supply"
+              className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-semibold font-body border-2 border-royal-mahogany text-royal-mahogany hover:bg-royal-mahogany hover:text-royal-bg transition-all">
+              <Building2 size={18} />View Procurement Details
+            </a>
             {waNumber && (
               <a href={`https://wa.me/${waNumber}?text=${waMsg}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-semibold font-body text-white transition-all hover:opacity-90 hover:shadow-lg"

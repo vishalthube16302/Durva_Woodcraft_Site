@@ -24,6 +24,7 @@ export default function Footer() {
   ];
 
   const govLinks = [
+    { label: 'Government Supply Info', href: '/government-supply' },
     { label: 'IndiaHandmade Portal',  href: 'https://indiahandmade.com' },
     { label: 'PM Vishwakarma Scheme', href: 'https://pmvishwakarma.gov.in' },
     { label: 'GeM (Govt Orders)',     href: 'https://gem.gov.in' },
@@ -150,14 +151,17 @@ export default function Footer() {
 
             <h4 className="font-display text-sm font-bold text-royal-bg mb-3">Government Portals</h4>
             <ul className="space-y-2">
-              {govLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <a href={href} target="_blank" rel="noopener noreferrer"
-                    className="font-body text-sm text-royal-bg/60 hover:text-royal-gold transition-colors flex items-center gap-1.5">
-                    <ExternalLink size={11} />{label}
-                  </a>
-                </li>
-              ))}
+              {govLinks.map(({ label, href }) => {
+                const isExternal = href.startsWith('http');
+                return (
+                  <li key={label}>
+                    <a href={href} {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="font-body text-sm text-royal-bg/60 hover:text-royal-gold transition-colors flex items-center gap-1.5">
+                      {isExternal ? <ExternalLink size={11} /> : <ArrowRight size={11} />}{label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

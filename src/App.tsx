@@ -6,6 +6,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProductDetails from './pages/ProductDetails';
 import GalleryPage from './pages/GalleryPage';
 import PolicyPage from './pages/PolicyPage';
+import GovernmentSupplyPage from './pages/GovernmentSupplyPage';
 import NotFound from './pages/NotFound';
 
 // Admin is accessible only via secret URL: /manage-durva-xk92
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Website />} />
           <Route path="/product_detail/:id" element={<ProductDetails />} />
           <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/government-supply" element={<GovernmentSupplyPage />} />
           <Route path="/policy/:slug" element={<PolicyPage />} />
           {/* Admin — secret URL */}
           <Route path={ADMIN_PATH} element={<AdminLogin />} />
