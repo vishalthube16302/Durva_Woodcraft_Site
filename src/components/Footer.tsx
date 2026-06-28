@@ -241,6 +241,10 @@ export default function Footer() {
             <span>Pan-India Delivery</span>
             {settings.msme_number && <><span>·</span><span>MSME: {settings.msme_number}</span></>}
           </div>
+          <p className="text-royal-bg/30 text-xs mt-1 sm:mt-0">
+            Made by{" "}
+            <span className="text-royal-bg/50 font-semibold">Vishal Thube</span>
+          </p>
         </div>
       </div>
     </footer>
