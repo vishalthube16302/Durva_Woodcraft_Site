@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Plus, Edit2, Trash2, Save, X, CheckCircle, AlertCircle,
-  Upload, Copy, Trash, Image as ImageIcon, Star, Eye, EyeOff, Package
+  Copy, Image as ImageIcon, Star, EyeOff, Package
 } from 'lucide-react';
 import { supabase, Product, Category } from '../../lib/supabase';
 import { useSettings } from '../../hooks/useSettings';
@@ -11,7 +11,6 @@ type Toast = { type: 'success' | 'error'; text: string } | null;
 type EditorTab = 'basic' | 'images' | 'features' | 'specs';
 
 interface SpecEntry { key: string; val: string; }
-interface StorageFile { name: string; url: string; }
 
 const EMPTY_FORM = {
   name: '',
@@ -42,9 +41,7 @@ export default function ProductsPanel() {
   const [newFeature, setNewFeature] = useState('');
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecVal, setNewSpecVal] = useState('');
-  const [uploading, setUploading]   = useState(false);
-  const [storageFiles, setStorageFiles] = useState<StorageFile[]>([]);
-  const [loadingFiles, setLoadingFiles] = useState(false);
+
   const editCardRef = useRef<HTMLDivElement>(null);
   const { settings } = useSettings();
 
@@ -68,21 +65,6 @@ export default function ProductsPanel() {
     setCategories(data || []);
   }, []);
 
-  const fetchStorageFiles = useCallback(async () => {
-    setLoadingFiles(true);
-    try {
-      const { data } = await supabase.storage.from('product-images').list('', { limit: 200, sortBy: { column: 'created_at', order: 'desc' } });
-      if (data) {
-        const files: StorageFile[] = data
-          .filter(f => f.name !== '.emptyFolderPlaceholder')
-          .map(f => ({
-            name: f.name,
-            url: supabase.storage.from('product-images').getPublicUrl(f.name).data.publicUrl,
-          }));
-        setStorageFiles(files);
-      }
-    } catch (err) { console.error(err); }
-    finally { setLoadingFiles(false); }
   }, []);
 
   useEffect(() => { fetchProducts(); fetchCategories(); }, [fetchProducts, fetchCategories]);
@@ -229,34 +211,7 @@ export default function ProductsPanel() {
     setForm(prev => ({ ...prev, images: imgs }));
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) return;
-    setUploading(true);
-    try {
-      const file = e.target.files[0];
-      const ext = file.name.split('.').pop();
-      const fileName = `product_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9]/g, '_')}.${ext}`;
-      const { error } = await supabase.storage.from('product-images').upload(fileName, file);
-      if (error) throw error;
-      const { data } = supabase.storage.from('product-images').getPublicUrl(fileName);
-      addImageUrl(data.publicUrl);
-      await fetchStorageFiles();
-      showToast('success', 'Image uploaded!');
-    } catch (err: any) {
-      showToast('error', 'Upload failed: ' + err.message);
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
-  };
 
-  const handleDeleteFile = async (name: string) => {
-    if (!confirm(`Delete file "${name}" from storage? This will break any product using it.`)) return;
-    const { error } = await supabase.storage.from('product-images').remove([name]);
-    if (error) { showToast('error', 'Delete failed: ' + error.message); return; }
-    showToast('success', 'File deleted from storage.');
-    fetchStorageFiles();
-  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => showToast('success', 'URL copied to clipboard!'));
@@ -321,7 +276,7 @@ export default function ProductsPanel() {
           {/* Tab bar */}
           <div className="flex gap-1 px-6 pt-4 border-b border-gray-100 bg-white">
             {TABS.map(t => (
-              <button key={t.id} onClick={() => { setEditorTab(t.id); if (t.id === 'images') fetchStorageFiles(); }}
+              <button key={t.id} onClick={() => setEditorTab(t.id)}
                 className={`px-4 py-2.5 text-sm font-body font-semibold rounded-t-lg border-b-2 transition-all ${
                   editorTab === t.id
                     ? 'border-amber-800 text-amber-900 bg-amber-50'
@@ -427,109 +382,88 @@ export default function ProductsPanel() {
 
             {/* ── TAB: Images ── */}
             {editorTab === 'images' && (
-              <div className="space-y-6">
-                {/* Current images */}
-                <div>
-                  <h4 className="font-semibold text-sm text-gray-700 mb-3">
-                    Product Images <span className="text-gray-400 font-normal">(first = main/cover)</span>
-                  </h4>
-                  {form.images.length === 0 ? (
-                    <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center text-gray-400">
-                      <ImageIcon size={32} className="mx-auto mb-2 opacity-30" />
-                      <p className="text-sm">No images yet. Upload below or paste URLs.</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {form.images.map((url, i) => (
-                        <div key={i} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square bg-gray-50">
-                          <img src={getImageUrl(url)} alt={`img-${i}`} className="w-full h-full object-cover" />
+              <div className="space-y-5">
+                <p className="text-sm text-gray-500">
+                  Add image URLs below. The <span className="font-semibold text-gray-700">first image</span> is used as the cover/main photo.
+                  Get URLs from the <span className="font-semibold text-gray-700">Image Library</span> tab above.
+                </p>
+
+                {/* URL input */}
+                <div className="flex gap-2">
+                  <input
+                    id="img-url-input"
+                    className={inputCls + ' flex-1'}
+                    type="url"
+                    placeholder="Paste image URL here (e.g. https://...)"
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const input = e.currentTarget;
+                        addImageUrl(input.value);
+                        input.value = '';
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      const input = document.getElementById('img-url-input') as HTMLInputElement;
+                      if (input) { addImageUrl(input.value); input.value = ''; }
+                    }}
+                    className="px-4 py-2.5 rounded-lg text-white text-sm font-semibold flex-shrink-0"
+                    style={{ backgroundColor: settings.primary_color }}>
+                    + Add
+                  </button>
+                </div>
+
+                {/* Image list */}
+                {form.images.length === 0 ? (
+                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center text-gray-400">
+                    <ImageIcon size={32} className="mx-auto mb-2 opacity-30" />
+                    <p className="text-sm">No images yet. Paste a URL above and click Add.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {form.images.map((url, i) => (
+                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 bg-gray-50 group">
+                        {/* Thumbnail */}
+                        <img src={getImageUrl(url)} alt={`img-${i}`}
+                          className="w-12 h-12 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
+                        {/* Cover badge + URL */}
+                        <div className="flex-1 min-w-0">
                           {i === 0 && (
-                            <span className="absolute top-1.5 left-1.5 bg-amber-600 text-white text-xs px-1.5 py-0.5 rounded-md font-semibold">
+                            <span className="inline-block bg-amber-600 text-white text-xs px-2 py-0.5 rounded-md font-semibold mb-1">
                               Cover
                             </span>
                           )}
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            {i > 0 && (
-                              <button onClick={() => moveImage(i, -1)}
-                                className="bg-white/90 text-gray-700 rounded-lg p-1.5 text-xs font-bold hover:bg-white">
-                                ↑
-                              </button>
-                            )}
-                            {i < form.images.length - 1 && (
-                              <button onClick={() => moveImage(i, 1)}
-                                className="bg-white/90 text-gray-700 rounded-lg p-1.5 text-xs font-bold hover:bg-white">
-                                ↓
-                              </button>
-                            )}
-                            <button onClick={() => copyToClipboard(url)}
-                              className="bg-white/90 text-blue-600 rounded-lg p-1.5 hover:bg-white" title="Copy URL">
-                              <Copy size={13} />
-                            </button>
-                            <button onClick={() => removeImage(i)}
-                              className="bg-white/90 text-red-500 rounded-lg p-1.5 hover:bg-white" title="Remove">
-                              <X size={13} />
-                            </button>
-                          </div>
+                          <p className="text-xs text-gray-500 truncate font-mono">{url}</p>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Upload new */}
-                <div className="border border-gray-200 rounded-xl p-4 space-y-3">
-                  <h4 className="font-semibold text-sm text-gray-700">Upload New Image</h4>
-                  <div className="relative inline-block">
-                    <input type="file" accept="image/*" onChange={handleUpload} disabled={uploading}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                    <button disabled={uploading}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
-                      <Upload size={15} />
-                      {uploading ? 'Uploading...' : 'Choose & Upload Image'}
-                    </button>
-                  </div>
-                  <p className="text-xs text-gray-400">After uploading, the image is automatically added to this product.</p>
-                </div>
-
-                {/* Storage browser */}
-                <div className="border border-gray-200 rounded-xl p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-sm text-gray-700">Storage Browser</h4>
-                    <button onClick={fetchStorageFiles}
-                      className="text-xs text-gray-500 hover:text-gray-700 underline">
-                      {loadingFiles ? 'Loading...' : 'Refresh'}
-                    </button>
-                  </div>
-                  {storageFiles.length === 0 ? (
-                    <p className="text-sm text-gray-400">No files in storage yet.</p>
-                  ) : (
-                    <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1">
-                      {storageFiles.map(f => (
-                        <div key={f.name} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 group">
-                          <img src={f.url} alt={f.name} className="w-10 h-10 object-cover rounded-lg flex-shrink-0 border border-gray-200" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-gray-600 truncate font-medium">{f.name}</p>
-                            <p className="text-xs text-gray-400 truncate">{f.url}</p>
-                          </div>
-                          <div className="flex gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => addImageUrl(f.url)} title="Add to product"
-                              className="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100">
-                              <Plus size={12} />
+                        {/* Actions */}
+                        <div className="flex gap-1 flex-shrink-0">
+                          {i > 0 && (
+                            <button onClick={() => moveImage(i, -1)}
+                              className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500 text-xs font-bold" title="Move up">
+                              ↑
                             </button>
-                            <button onClick={() => copyToClipboard(f.url)} title="Copy URL"
-                              className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100">
-                              <Copy size={12} />
+                          )}
+                          {i < form.images.length - 1 && (
+                            <button onClick={() => moveImage(i, 1)}
+                              className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500 text-xs font-bold" title="Move down">
+                              ↓
                             </button>
-                            <button onClick={() => handleDeleteFile(f.name)} title="Delete from storage"
-                              className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100">
-                              <Trash size={12} />
-                            </button>
-                          </div>
+                          )}
+                          <button onClick={() => copyToClipboard(url)}
+                            className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-500" title="Copy URL">
+                            <Copy size={13} />
+                          </button>
+                          <button onClick={() => removeImage(i)}
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-red-500" title="Remove">
+                            <X size={13} />
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
