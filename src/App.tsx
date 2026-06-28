@@ -9,8 +9,8 @@ import PolicyPage from './pages/PolicyPage';
 import GovernmentSupplyPage from './pages/GovernmentSupplyPage';
 import NotFound from './pages/NotFound';
 
-// Admin is accessible only via secret URL: /manage-durva-xk92
-const ADMIN_PATH = '/manage-durva-xk92';
+const ADMIN_LOGIN = '/admin/login';
+const ADMIN_DASHBOARD = '/admin/dashboard';
 
 function App() {
   return (
@@ -22,11 +22,10 @@ function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/government-supply" element={<GovernmentSupplyPage />} />
           <Route path="/policy/:slug" element={<PolicyPage />} />
-          {/* Admin — secret URL */}
-          <Route path={ADMIN_PATH} element={<AdminLogin />} />
-          <Route path={`${ADMIN_PATH}/dashboard`} element={<AdminDashboard />} />
-          <Route path="/admin" element={<NotFound />} />
-          <Route path="/admin/dashboard" element={<NotFound />} />
+          {/* Admin routes */}
+          <Route path={ADMIN_LOGIN} element={<AdminLogin />} />
+          <Route path={ADMIN_DASHBOARD} element={<AdminDashboard />} />
+          <Route path="/admin" element={<AdminLogin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
