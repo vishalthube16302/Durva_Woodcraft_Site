@@ -65,8 +65,6 @@ export default function ProductsPanel() {
     setCategories(data || []);
   }, []);
 
-  }, []);
-
   useEffect(() => { fetchProducts(); fetchCategories(); }, [fetchProducts, fetchCategories]);
 
   const productToForm = (p: Product) => {
@@ -210,7 +208,6 @@ export default function ProductsPanel() {
     [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
     setForm(prev => ({ ...prev, images: imgs }));
   };
-
 
 
   const copyToClipboard = (text: string) => {
