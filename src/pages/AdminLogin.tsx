@@ -5,8 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { getImageUrl } from '../utils/imageUtils';
 
-const ADMIN_DASHBOARD = '/manage-durva-xk92/dashboard';
-const ADMIN_LOGIN = '/manage-durva-xk92';
+const ADMIN_DASHBOARD = '/admin/dashboard';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -85,7 +84,6 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 transition-all"
-                style={{ '--tw-ring-color': settings.primary_color } as React.CSSProperties}
                 placeholder="admin@example.com"
                 required
               />
@@ -100,7 +98,6 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 transition-all"
-                style={{ '--tw-ring-color': settings.primary_color } as React.CSSProperties}
                 placeholder="••••••••"
                 required
               />
