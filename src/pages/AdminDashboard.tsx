@@ -19,12 +19,12 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!authLoading && !user) navigate('/manage-durva-xk92');
+    if (!authLoading && !user) navigate('/admin/login');
   }, [user, authLoading, navigate]);
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/manage-durva-xk92');
+    navigate('/admin/login');
   };
 
   if (authLoading || !user || !settings) {
