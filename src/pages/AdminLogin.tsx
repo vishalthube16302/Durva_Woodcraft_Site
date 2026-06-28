@@ -5,6 +5,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { getImageUrl } from '../utils/imageUtils';
 
+const ADMIN_DASHBOARD = '/manage-durva-xk92/dashboard';
+const ADMIN_LOGIN = '/manage-durva-xk92';
+
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +19,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     if (user) {
-      navigate('/admin/dashboard');
+      navigate(ADMIN_DASHBOARD);
     }
   }, [user, navigate]);
 
@@ -31,7 +34,7 @@ export default function AdminLogin() {
       setError(error.message);
       setLoading(false);
     } else {
-      navigate('/admin/dashboard');
+      navigate(ADMIN_DASHBOARD);
     }
   };
 
