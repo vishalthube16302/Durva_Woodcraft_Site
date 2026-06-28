@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Settings, Package, FolderTree, Image as ImageIcon, ExternalLink, Shield, MessageCircle } from 'lucide-react';
+import { LogOut, Settings, Package, FolderTree, Image as ImageIcon, ExternalLink, Shield, MessageCircle, Images } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { getImageUrl } from '../utils/imageUtils';
@@ -9,8 +9,9 @@ import CategoriesPanel from '../components/admin/CategoriesPanel';
 import ProductsPanel from '../components/admin/ProductsPanel';
 import GalleryPanel from '../components/admin/GalleryPanel';
 import InquiriesPanel from '../components/admin/InquiriesPanel';
+import ImageLibraryPanel from '../components/admin/ImageLibraryPanel';
 
-type Tab = 'products' | 'inquiries' | 'categories' | 'gallery' | 'settings';
+type Tab = 'products' | 'inquiries' | 'categories' | 'gallery' | 'images' | 'settings';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('products');
@@ -39,11 +40,12 @@ export default function AdminDashboard() {
   }
 
   const tabs = [
-    { id: 'products'   as Tab, name: 'Products',   icon: Package },
-    { id: 'inquiries'  as Tab, name: 'Inquiries',  icon: MessageCircle },
-    { id: 'categories' as Tab, name: 'Categories', icon: FolderTree },
-    { id: 'gallery'    as Tab, name: 'Gallery',    icon: ImageIcon },
-    { id: 'settings'   as Tab, name: 'Settings',   icon: Settings },
+    { id: 'products'   as Tab, name: 'Products',      icon: Package },
+    { id: 'inquiries'  as Tab, name: 'Inquiries',     icon: MessageCircle },
+    { id: 'categories' as Tab, name: 'Categories',    icon: FolderTree },
+    { id: 'gallery'    as Tab, name: 'Gallery',       icon: ImageIcon },
+    { id: 'images'     as Tab, name: 'Image Library', icon: Images },
+    { id: 'settings'   as Tab, name: 'Settings',      icon: Settings },
   ];
 
   return (
@@ -100,6 +102,7 @@ export default function AdminDashboard() {
         {activeTab === 'inquiries'  && <InquiriesPanel />}
         {activeTab === 'categories' && <CategoriesPanel />}
         {activeTab === 'gallery'    && <GalleryPanel />}
+        {activeTab === 'images'     && <ImageLibraryPanel />}
         {activeTab === 'settings'   && <SettingsPanel />}
       </main>
     </div>
