@@ -4,52 +4,46 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://durvawoodcraft.in/</loc>
-    <lastmod>2026-06-17</lastmod>
+    <loc>https://www.durvawoodcraft.com/</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Government / Institutional Supply -->
   <url>
-    <loc>https://durvawoodcraft.in/government-supply</loc>
-    <lastmod>2026-06-17</lastmod>
+    <loc>https://www.durvawoodcraft.com/government-supply</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Gallery / Portfolio -->
+  <!-- Gallery -->
   <url>
-    <loc>https://durvawoodcraft.in/gallery</loc>
-    <lastmod>2026-06-17</lastmod>
+    <loc>https://www.durvawoodcraft.com/gallery</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Policy Pages -->
   <url>
-    <loc>https://durvawoodcraft.in/policy/shipping</loc>
-    <lastmod>2026-06-17</lastmod>
+    <loc>https://www.durvawoodcraft.com/policy/shipping</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://durvawoodcraft.in/policy/returns</loc>
-    <lastmod>2026-06-17</lastmod>
+    <loc>https://www.durvawoodcraft.com/policy/returns</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://durvawoodcraft.in/policy/warranty</loc>
-    <lastmod>2026-06-17</lastmod>
+    <loc>https://www.durvawoodcraft.com/policy/warranty</loc>
+    <lastmod>2026-07-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
-
-  <!-- NOTE: Product detail URLs are dynamic (from Supabase) and not listed
-       individually here since this is a Vite SPA. Submit this sitemap to
-       Google Search Console — it covers all crawlable static routes.
-       Product pages are still discoverable via internal links from
-       the homepage Products section and get indexed via crawl. -->
 
 </urlset>
