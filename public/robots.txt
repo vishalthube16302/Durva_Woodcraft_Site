@@ -1,14 +1,13 @@
 User-agent: *
 Allow: /
 
-# Block admin from search engines — secret URL must not be indexed
-Disallow: /manage-durva-xk92
-Disallow: /manage-durva-xk92/dashboard
+# Block admin from search engines
 Disallow: /admin
+Disallow: /admin/login
 Disallow: /admin/dashboard
 
 # Sitemap location
-Sitemap: https://durvawoodcraft.in/sitemap.xml
+Sitemap: https://www.durvawoodcraft.com/sitemap.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1
